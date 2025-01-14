@@ -19,7 +19,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision.Cameras;
+
 import java.io.File;
+
+import org.photonvision.PhotonCamera;
+
 import swervelib.SwerveInputStream;
 
 /**
@@ -29,12 +34,12 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer
 {
-
+ 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                                "swerve/neo"));
+                                                                                "swerve/bionic-beef-NERD-event"));
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -133,10 +138,11 @@ public class RobotContainer
    */
   private void configureBindings()
   {
-    // (Condition) ? Return-On-True : Return-on-False
-    drivebase.setDefaultCommand(!RobotBase.isSimulation() ?
-                                driveFieldOrientedAnglularVelocity :
-                                driveFieldOrientedAnglularVelocitySim);
+    // // (Condition) ? Return-On-True : Return-on-False
+    // drivebase.setDefaultCommand(!RobotBase.isSimulation() ?
+    //                             driveFieldOrientedAnglularVelocity :
+    //                             driveFieldOrientedAnglularVelocitySim);
+    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
     if (Robot.isSimulation())
     {
@@ -151,7 +157,7 @@ public class RobotContainer
       driverXbox.x().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.y().whileTrue(drivebase.driveToDistanceCommand(1.0, 0.2));
       driverXbox.start().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.back().whileTrue(drivebase.centerModulesCommand());
+      // driverXbox.back().whileTrue();
       driverXbox.leftBumper().onTrue(Commands.none());
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
@@ -165,7 +171,7 @@ public class RobotContainer
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().onTrue(Commands.none());
+      driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(new PhotonCamera("center")));
     }
 
   }
