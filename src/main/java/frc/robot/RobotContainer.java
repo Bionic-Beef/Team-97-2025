@@ -35,6 +35,7 @@ import swervelib.SwerveInputStream;
 public class RobotContainer
 {
  
+  public final PhotonCamera camera = new PhotonCamera("center");
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
@@ -171,7 +172,7 @@ public class RobotContainer
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(new PhotonCamera("center")));
+      driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(camera));
     }
 
   }

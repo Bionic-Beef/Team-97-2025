@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import java.sql.Driver;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -41,6 +44,13 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit()
   {
+    Constants.IDS_TO_NAME.put(1,"Blue Alliance Left");
+    Constants.IDS_TO_NAME.put(2,"Blue Alliance Center");
+    Constants.IDS_TO_NAME.put(3,"Blue Alliance Right");
+    Constants.IDS_TO_NAME.put(4,"Red Alliance Left");
+    Constants.IDS_TO_NAME.put(5,"Red Alliance Center");
+    Constants.IDS_TO_NAME.put(6,"Red Alliance Right");
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -69,6 +79,7 @@ public class Robot extends TimedRobot
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    // SmartDashboard.putString("Current Target", (String) Constants.IDS_TO_NAME.get(m_robotContainer.camera.getLatestResult().getBestTarget().getFiducialId()));
     CommandScheduler.getInstance().run();
   }
 
