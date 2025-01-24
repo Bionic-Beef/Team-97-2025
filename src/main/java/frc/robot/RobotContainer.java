@@ -171,7 +171,7 @@ public class RobotContainer
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(new PhotonCamera("center")));
+      driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(new PhotonCamera("center"), driveAngularVelocity));
     }
 
   }

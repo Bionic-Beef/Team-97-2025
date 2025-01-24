@@ -240,9 +240,23 @@ public Command aimAtTarget(PhotonCamera camera)
         .getYaw());
         drive(getTargetSpeeds(0,
                               0,
-                              Rotation2d.fromDegrees(-result.getBestTarget()
+                              Rotation2d.fromDegrees(swerveDrive.getYaw().getDegrees()+result.getBestTarget()
                                                            .getYaw()))); // Not sure if this will work, more math may be required.
       }
+    });
+  }
+  public Command aimAtTarget(PhotonCamera camera, Supplier<ChassisSpeeds> speeds)
+  {
+    return run(() -> {
+      PhotonPipelineResult result = camera.getLatestResult();
+      ChassisSpeeds speed = speeds.get();
+      if (result.hasTargets())
+      {
+        SmartDashboard.putNumber("Target Yaw", result.getBestTarget()
+        .getYaw());  
+        speed.omegaRadiansPerSecond = getTargetSpeeds(0.0, 0.0, Rotation2d.fromDegrees(swerveDrive.getYaw().getDegrees()+result.getBestTarget().getYaw())).omegaRadiansPerSecond;
+      }
+      drive(speed); // Not sure if this will work, more math may be required.
     });
   }
   /**
