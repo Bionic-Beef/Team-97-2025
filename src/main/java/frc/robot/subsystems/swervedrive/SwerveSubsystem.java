@@ -99,12 +99,12 @@ public class SwerveSubsystem extends SubsystemBase
     }
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
-    swerveDrive.setAngularVelocityCompensation(true,
+    swerveDrive.setAngularVelocityCompensation(false,
                                                true,
                                                0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
-  //  swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+   swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
     if (visionDriveTest)
     {
      setupPhotonVision();
@@ -236,6 +236,8 @@ public Command aimAtTarget(PhotonCamera camera)
       PhotonPipelineResult result = camera.getLatestResult();
       if (result.hasTargets())
       {
+        SmartDashboard.putNumber("Target Yaw", result.getBestTarget()
+        .getYaw());
         drive(getTargetSpeeds(0,
                               0,
                               Rotation2d.fromDegrees(-result.getBestTarget()
@@ -343,7 +345,7 @@ public Command aimAtTarget(PhotonCamera camera)
     return SwerveDriveTest.generateSysIdCommand(
         SwerveDriveTest.setDriveSysIdRoutine(
             new Config(),
-            this, swerveDrive, 12),
+            this, swerveDrive, 12.0, false),
         3.0, 5.0, 3.0);
   }
 
