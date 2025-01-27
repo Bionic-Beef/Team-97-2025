@@ -256,7 +256,7 @@ public Command aimAtTarget(PhotonCamera camera)
         .getYaw());  
         speed.omegaRadiansPerSecond = getTargetSpeeds(0.0, 0.0, Rotation2d.fromDegrees(swerveDrive.getYaw().getDegrees()+result.getBestTarget().getYaw())).omegaRadiansPerSecond;
       }
-      drive(speed); 
+      driveFieldOriented(speed); 
     });
   }
   /**
