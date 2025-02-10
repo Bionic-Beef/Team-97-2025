@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -166,8 +167,9 @@ public class RobotContainer
                               );
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
-      driverXbox.leftBumper().whileTrue(drivebase.aimAtTarget(2));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(1));
+      // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(1, driveAngularVelocity));
     }
 
   }

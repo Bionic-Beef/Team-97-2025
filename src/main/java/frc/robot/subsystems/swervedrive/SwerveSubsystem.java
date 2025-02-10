@@ -250,63 +250,95 @@ public class SwerveSubsystem extends SubsystemBase
   * @param id the ID of the april tag to aim at
   * @return A {@link Command} which will run the alignment.
   */
-  // public Command aimAtTarget(int id)
-  // {
-  //   return run(() -> {
-  //       PhotonTrackedTarget result = vision.getTargetFromId(id);
-  //       if (result != null)
-  //       {
-  //         SmartDashboard.putNumber("Target Yaw", result.getYaw());
-  //         drive(getTargetSpeeds(0,
-  //                               0,
-  //                               Rotation2d.fromDegrees(swerveDrive.getYaw().getDegrees()+result.getYaw()))); // Not sure if this will work, more math may be required.
-  //       }
-  //   });
-  // }
   public Command aimAtTarget(int id)
   {
-    Pose2d position = getPose();
     return run(() -> {
-      Pose2d result = null;
-      
-      try{
-        result = vision.getAprilTagPose(id, new Transform2d());
-      }
-      finally{
-        
+        PhotonTrackedTarget result = vision.getTargetFromId(id);
         if (result != null)
         {
-          double rotation = Rotation2d.fromRadians(Math.atan2(result.getY()-getPose().getY(), result.getX()-getPose().getX())).getDegrees();
-          SmartDashboard.putNumber("Target Yaw", rotation);
-          SmartDashboard.putNumber("Yaw", swerveDrive.getYaw().getDegrees());
-          SmartDashboard.putNumber("Estimated Rotation", result.relativeTo(getPose()).getRotation().getDegrees()+swerveDrive.getYaw().getDegrees());
-
+          SmartDashboard.putNumber("Target Yaw", result.getYaw());
           drive(getTargetSpeeds(0,
                                 0,
-                                Rotation2d.fromDegrees(rotation+swerveDrive.getYaw().getDegrees())));//result.relativeTo(getPose()).getRotation().getDegrees()+swerveDrive.getYaw().getDegrees()))); // Not sure if this will work, more math may be required.
+                                Rotation2d.fromDegrees(swerveDrive.getOdometryHeading().getDegrees()+result.getYaw()))); // Not sure if this will work, more math may be required.
         }
-      }
     });
   }
+  // public Command aimAtTarget2(int id)
+  // {
+  //   return run(() -> {
+  //     Pose2d result = null;
+      
+  //     try{
+  //       result = vision.getAprilTagPose(id, new Transform2d());
+  //     }
+  //     finally{
+        
+  //       if (result != null)
+  //       {
+  //         double rotation = Rotation2d.fromRadians(Math.atan2(result.getY()-getPose().getY(), result.getX()-getPose().getX())).getDegrees();
+  //         SmartDashboard.putNumber("Target Yaw", rotation);
+  //         SmartDashboard.putNumber("Yaw", swerveDrive.getYaw().getDegrees());
+  //         SmartDashboard.putNumber("Estimated Rotation", result.relativeTo(getPose()).getRotation().getDegrees()+swerveDrive.getYaw().getDegrees());
+  //         drive(getTargetSpeeds(0,
+  //                               0,
+  //                               Rotation2d.fromDegrees(rotation + swerveDrive.getOdometryHeading().getDegrees())));//
+  //                               //swerveDrive.getYaw().getDegrees())));//result.relativeTo(getPose()).getRotation().getDegrees()+swerveDrive.getYaw().getDegrees()))); // Not sure if this will work, more math may be required.
+  //       }
+  //     }
+  //   });
+  // }
    /**
   * Aim the robot at the target returned by PhotonVision while driving field oriented.
   *
   * @return A {@link Command} which will run the alignment.
   */
-  // public Command aimAtTarget(int id, Supplier<ChassisSpeeds> speeds)
-  // {
-  //   return run(() -> {
-  //     ChassisSpeeds speed = speeds.get();
-  //     if (result.hasTargets())
-  //     {
-  //       SmartDashboard.putNumber("Target Yaw", result.getBestTarget()
-  //       .getYaw());  
-  //       speed.omegaRadiansPerSecond = getTargetSpeeds(0.0, 0.0, Rotation2d.fromDegrees(swerveDrive.getYaw().getDegrees()+result.getBestTarget().getYaw())).omegaRadiansPerSecond;
-  //     }
-  //     driveFieldOriented(speed); 
-  //   });
-  // }
+  public Command aimAtTarget(int id, Supplier<ChassisSpeeds> speeds)
+  {
+    return run(() -> {
+      PhotonTrackedTarget result = vision.getTargetFromId(id);
+      ChassisSpeeds speed = speeds.get();
+      if (result != null)
+      {
+        SmartDashboard.putNumber("Target Yaw", result.getYaw());  
+        speed.omegaRadiansPerSecond = getTargetSpeeds(0.0, 0.0, Rotation2d.fromDegrees(swerveDrive.getOdometryHeading().getDegrees()+result.getYaw())).omegaRadiansPerSecond;
+      }
+      driveFieldOriented(speed); 
+    });
+  }
 
+  public Command driveToTarget(int id, Transform2d robotOffset)
+  {
+    return run(() -> {
+      System.out.println("1");
+      double distanceFromTarget = 0.2; // How far away from robot to be
+      Pose2d idPosition = Vision.getAprilTagPose(id, robotOffset);
+      Pose2d currentPose = getPose();
+      double xOffset = currentPose.getX() - idPosition.getX();
+      double yOffset = currentPose.getY() - idPosition.getY();
+      double magnitude = Math.sqrt(Math.pow(xOffset, 2) + Math.pow(yOffset, 2));
+      double xDistance = (xOffset / magnitude) * (magnitude - distanceFromTarget);
+      double yDistance = (yOffset / magnitude) * (magnitude - distanceFromTarget);
+      Pose2d target = new Pose2d(currentPose.getX() + xDistance, currentPose.getY()+yDistance, idPosition.getRotation());
+      // System.out.println(xDistance + " " + yDistance);
+      System.out.println("Target: " + target);
+      System.out.println("Current: " + currentPose);
+      driveToPose(target);
+    });
+  }
+
+  public Command aimAt(int id, Supplier<ChassisSpeeds> speeds)
+  {
+    return run(() -> {
+      PhotonTrackedTarget result = vision.getTargetFromId(id);
+      ChassisSpeeds speed = speeds.get();
+      if (result != null)
+      {
+        SmartDashboard.putNumber("Target Yaw", result.getYaw());  
+        speed.omegaRadiansPerSecond = getTargetSpeeds(0.0, 0.0, Rotation2d.fromDegrees(swerveDrive.getOdometryHeading().getDegrees()+result.getYaw())).omegaRadiansPerSecond;
+      }
+      driveFieldOriented(speed); 
+    });
+  }
   
   /**
    * Get the path follower with events.
