@@ -23,6 +23,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -128,15 +129,7 @@ public class Vision
    
     private static AprilTagFieldLayout getFieldLayout(boolean useNormalLayout) 
   {
-    AprilTagFieldLayout layout = null; //AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    if (useNormalLayout)
-      return layout;
-    try{
-      layout = new AprilTagFieldLayout(Filesystem.getDeployDirectory().getPath() +  "/swerve/arimap.json");
-    } catch (IOException e) {
-      SmartDashboard.putString("ErrorLoading", e.getMessage());
-
-    }
+    AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
     return layout;
   }
   /**
