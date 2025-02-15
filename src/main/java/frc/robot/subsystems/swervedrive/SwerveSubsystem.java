@@ -23,6 +23,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -94,8 +95,8 @@ public class SwerveSubsystem extends SubsystemBase
       try
       {
         swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
-                                                                    new Pose2d(new Translation2d(Meter.of(0),
-                                                                                                 Meter.of(0)),
+                                                                    new Pose2d(new Translation2d(Meter.of(2),
+                                                                                                 Meter.of(2)),
                                                                                Rotation2d.fromDegrees(0)));        
         // Alternative method if you don't want to supply the conversion factor via JSON files.
         // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
@@ -111,7 +112,8 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.setModuleEncoderAutoSynchronize(false,
                                                   1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
      swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
-      if (visionDriveTest)
+     SmartDashboard.putBoolean("Run vision odemtry updates?", visionDriveTest);
+     if (visionDriveTest)
       {
        setupPhotonVision();
         // Stop the odometry thread if we are using vision that way we can synchronize updates better.
@@ -160,12 +162,12 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
-    vision.updateVisionField();
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (visionDriveTest)
+    if (SmartDashboard.getBoolean("Run vision odemetry updates?", false));
     {
       vision.updatePoseEstimation(swerveDrive);
       swerveDrive.updateOdometry();
+      vision.updateVisionField();
     }
   }
 
@@ -245,6 +247,17 @@ public class SwerveSubsystem extends SubsystemBase
     PathfindingCommand.warmupCommand().schedule();
   }
 
+
+ public Command AimAtBestTarget(){
+  return run(() -> {
+  PhotonTrackedTarget target = vision.bestTarget();
+   if (target != null){
+    SmartDashboard.putNumber("Target Yaw", target.getYaw());
+    drive(getTargetSpeeds(0,
+                          0,
+                          Rotation2d.fromDegrees(swerveDrive.getOdometryHeading().getDegrees()+target.getYaw()))); // Not sure if this will work, more math may be required.
+   }});
+ }
  /**
   * Aim the robot at the target returned by PhotonVision.
   * @param id the ID of the april tag to aim at

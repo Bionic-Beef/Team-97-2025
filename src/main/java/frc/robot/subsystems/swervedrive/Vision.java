@@ -356,6 +356,16 @@ public class Vision
     field2d.getObject("tracked targets").setPoses(poses);
   }
 
+  public PhotonTrackedTarget bestTarget(){
+    Optional<PhotonPipelineResult> result = Cameras.LEFT_CAM.getBestResult();
+    if (result.isPresent()){
+      return Cameras.LEFT_CAM.getBestResult().get().getBestTarget();
+    }
+    else{
+      return null;
+    }
+  }
+
   /**
    * Camera Enum to select each camera
    */
@@ -364,11 +374,11 @@ public class Vision
     /**
      * Left Camera
      */
-    LEFT_CAM("left",
-             new Rotation3d(0, Math.toRadians(0), Math.toRadians(90)),
-             new Translation3d(Units.inchesToMeters(7),
-                               Units.inchesToMeters(4),
-                               Units.inchesToMeters(17)),
+    LEFT_CAM("left_camera",
+             new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)),
+             new Translation3d(Units.inchesToMeters(11),
+                               Units.inchesToMeters(0),
+                               Units.inchesToMeters(1)),
              VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1));
     /**
      * Right Camera
