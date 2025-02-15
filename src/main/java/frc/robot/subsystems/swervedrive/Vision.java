@@ -369,7 +369,7 @@ public class Vision
              new Translation3d(Units.inchesToMeters(7),
                                Units.inchesToMeters(4),
                                Units.inchesToMeters(17)),
-             VecBuilder.fill(0.9,2,5), VecBuilder.fill(0.5,0.5,1));
+             VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1));
     /**
      * Right Camera
      */

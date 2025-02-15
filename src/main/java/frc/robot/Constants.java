@@ -51,4 +51,13 @@ public final class Constants
     public static final double RIGHT_X_DEADBAND = 0.2;
     public static final double TURN_CONSTANT    = 6;
   }
+
+  public static class ElevatorConstants{
+    public static final int elevatorLeaderID = (Integer) 13;
+    public static final int elevatorFollowerID = (Integer) 14;
+  }
+
+  public static class CoralPlacerConstants{
+    public static final int placerMotorID = (Integer) 15;
+  }
 }

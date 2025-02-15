@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.CoralPlacerSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 import java.io.File;
@@ -38,6 +40,9 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/bionic-beef-NERD-event"));
+  private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+  private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
+
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -170,6 +175,20 @@ public class RobotContainer
       // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.rightBumper().whileTrue(drivebase.aimAtTarget(1, driveAngularVelocity));
+
+      // elevator
+      driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
+      driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
+
+      driverXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      driverXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+
+      // coral placer
+      driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
+      driverXbox.a().whileTrue(m_coralPlacerSubsystem.placerReverse());
+
+      driverXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      driverXbox.a().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
   }
