@@ -185,10 +185,10 @@ public class RobotContainer
 
       // coral placer
       driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
-      driverXbox.a().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      driverXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
 
       driverXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
-      driverXbox.a().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      driverXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
   }
