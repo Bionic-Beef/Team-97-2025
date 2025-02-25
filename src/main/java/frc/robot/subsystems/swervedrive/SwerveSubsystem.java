@@ -163,7 +163,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void periodic()
   {
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (SmartDashboard.getBoolean("Run vision odemetry updates?", false));
+    if (SmartDashboard.getBoolean("Run vision odemetry updates?", true));
     {
       vision.updatePoseEstimation(swerveDrive);
       swerveDrive.updateOdometry();
@@ -270,9 +270,9 @@ public class SwerveSubsystem extends SubsystemBase
         if (result != null)
         {
           SmartDashboard.putNumber("Target Yaw", result.getYaw());
-          drive(getTargetSpeeds(0,
-                                0,
-                                Rotation2d.fromDegrees(swerveDrive.getOdometryHeading().getDegrees()+result.getYaw()))); // Not sure if this will work, more math may be required.
+          // drive(getTargetSpeeds(0,
+          //                       0,
+          //                       Rotation2d.fromDegrees(swerveDrive.getOdometryHeading().getDegrees()+result.getYaw()))); // Not sure if this will work, more math may be required.
         }
     });
   }
