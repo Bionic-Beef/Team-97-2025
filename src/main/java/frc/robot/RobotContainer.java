@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,9 @@ public class RobotContainer
                                                                                 "swerve/bionic-beef-WEEK-0"));
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
+
+  public static final DigitalInput m_noCoralInIntakeSensor = new DigitalInput(0);
+  public static Trigger noCoralIntakeTrigger = new Trigger(m_noCoralInIntakeSensor::get);
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -197,6 +201,10 @@ public class RobotContainer
       altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
       altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+
+      // automatic coral intake
+      noCoralIntakeTrigger.onFalse(m_coralPlacerSubsystem.placerForward());
+      noCoralIntakeTrigger.onTrue(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
   }
