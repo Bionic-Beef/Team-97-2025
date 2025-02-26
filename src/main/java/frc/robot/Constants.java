@@ -55,6 +55,11 @@ public final class Constants
   public static class ElevatorConstants{
     public static final int elevatorLeaderID = (Integer) 13;
     public static final int elevatorFollowerID = (Integer) 14;
+    public static final double elevatorP = 0.01;
+    public static final double elevatorI = 0.;
+    public static final double elevatorD = 0.;
+    public static final double[] elevatorPositions = {0, 0.2, 0.3};
+    public static final double rotationsPerMeter = 1;
   }
 
   public static class CoralPlacerConstants{
