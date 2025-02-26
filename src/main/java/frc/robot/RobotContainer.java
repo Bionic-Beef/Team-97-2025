@@ -38,7 +38,7 @@ public class RobotContainer
   final         CommandXboxController altXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                                "swerve/bionic-beef-NERD-event"));
+                                                                                "swerve/bionic-beef-WEEK-0"));
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
