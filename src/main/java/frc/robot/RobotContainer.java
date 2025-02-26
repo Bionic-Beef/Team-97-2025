@@ -38,7 +38,7 @@ public class RobotContainer
   final         CommandXboxController altXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                                "swerve/bionic-beef-WEEK-0"));
+                                                                                "swerve/bionic-beef-NERD-event"));
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
@@ -167,6 +167,17 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
+      // drive robot relative with D pad
+      driverXbox.povUp().whileTrue(drivebase.drivePOV(0, -1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povUpLeft().whileTrue(drivebase.drivePOV(1, -1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povUpRight().whileTrue(drivebase.drivePOV(-1, -1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povDown().whileTrue(drivebase.drivePOV(0, 1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povDownLeft().whileTrue(drivebase.drivePOV(1, 1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povDownRight().whileTrue(drivebase.drivePOV(-1, 1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povLeft().whileTrue(drivebase.drivePOV(1, 0, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povRight().whileTrue(drivebase.drivePOV(-1, 0, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+
+
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       driverXbox.b().whileTrue(
