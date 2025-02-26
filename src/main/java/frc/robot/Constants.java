@@ -59,5 +59,6 @@ public final class Constants
 
   public static class CoralPlacerConstants{
     public static final int placerMotorID = (Integer) 15;
+    public static final int sensorDIO = 3;
   }
 }

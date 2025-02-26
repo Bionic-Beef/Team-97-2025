@@ -42,7 +42,7 @@ public class RobotContainer
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
-  public static final DigitalInput m_noCoralInIntakeSensor = new DigitalInput(0);
+  public static final DigitalInput m_noCoralInIntakeSensor = new DigitalInput(Constants.CoralPlacerConstants.sensorDIO);
   public static Trigger noCoralIntakeTrigger = new Trigger(m_noCoralInIntakeSensor::get);
 
   // Applies deadbands and inverts controls because joysticks
