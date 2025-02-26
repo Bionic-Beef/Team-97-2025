@@ -163,6 +163,23 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
     } else
     {
+
+//    driverXbox.button(1).whileTrue(arm.setGoal(15));
+    driverXbox.button(1).whileTrue(m_elevatorSubsystem.setGoal(3));
+
+    driverXbox.button(2).whileTrue(m_elevatorSubsystem.setGoal(6));
+
+    driverXbox.button(3).whileTrue(m_elevatorSubsystem.setGoal(9));
+
+
+//    driverXbox.button(5).whileTrue(arm.runSysIdRoutine());
+    driverXbox.button(5).whileTrue(m_elevatorSubsystem.runSysIdRoutine());
+
+
+    driverXbox.button(6).whileTrue(m_elevatorSubsystem.setGoal(4));
+//    driverXbox.button(6).whileTrue(setElevArm(10, 70));
+
+m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA HAAAAA"));
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       driverXbox.b().whileTrue(
@@ -175,10 +192,10 @@ public class RobotContainer
       driverXbox.rightBumper().whileTrue(drivebase.AimAtBestTarget());
 
       // elevator driverXbox
-      driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
-      driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
-      driverXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
-      driverXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
+      // driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
+      // driverXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // driverXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer driverXbox
       driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
@@ -187,10 +204,10 @@ public class RobotContainer
       driverXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // elevator altXbox
-      altXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
-      altXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
-      altXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
-      altXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // altXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
+      // altXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
+      // altXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // altXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer altXbox
       altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
