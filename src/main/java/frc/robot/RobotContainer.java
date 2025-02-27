@@ -164,32 +164,33 @@ public class RobotContainer
     } else
     {
 
+      driverXbox.x().whileTrue(m_elevatorSubsystem.setGoal(0.0));
 //    driverXbox.button(1).whileTrue(arm.setGoal(15));
-    driverXbox.button(1).whileTrue(m_elevatorSubsystem.setGoal(3));
+    driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(0.1));
 
-    driverXbox.button(2).whileTrue(m_elevatorSubsystem.setGoal(6));
+    driverXbox.rightBumper().whileTrue(m_elevatorSubsystem.setGoal(0.5));
 
-    driverXbox.button(3).whileTrue(m_elevatorSubsystem.setGoal(9));
+    driverXbox.leftBumper().whileTrue(m_elevatorSubsystem.setGoal(1));
 
 
 //    driverXbox.button(5).whileTrue(arm.runSysIdRoutine());
-    driverXbox.button(5).whileTrue(m_elevatorSubsystem.runSysIdRoutine());
+    driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.stopC());
 
 
-    driverXbox.button(6).whileTrue(m_elevatorSubsystem.setGoal(4));
+    driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.setGoal(2));
 //    driverXbox.button(6).whileTrue(setElevArm(10, 70));
 
 m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA HAAAAA"));
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      // driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      driverXbox.b().whileTrue(
-          drivebase.driveCommand(() -> 1.0, () -> 0.0,() -> 0.0)
-                              );
+      // driverXbox.b().whileTrue(
+      //     drivebase.driveCommand(() -> 1.0, () -> 0.0,() -> 0.0)
+      //                         );
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().whileTrue(drivebase.AimAtBestTarget());
+      // driverXbox.rightBumper().whileTrue(drivebase.AimAtBestTarget());
 
       // elevator driverXbox
       // driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
@@ -199,9 +200,9 @@ m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA 
 
       // coral placer driverXbox
       driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
-      driverXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      // driverXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
       driverXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
-      driverXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      // driverXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // elevator altXbox
       // altXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
@@ -211,9 +212,9 @@ m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA 
 
       // coral placer altXbox
       altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
-      altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      // altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
       altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
-      altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      // altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
   }

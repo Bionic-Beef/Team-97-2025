@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -144,8 +145,8 @@ public class ElevatorSubsystem extends SubsystemBase
     m_motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     followerConfig
-        .follow(ElevatorConstants.elevatorLeaderID)
-        .inverted(true);
+      // .inverted(false)
+        .follow(ElevatorConstants.elevatorLeaderID, true);
 
     followerSparkMax.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -226,10 +227,35 @@ public class ElevatorSubsystem extends SubsystemBase
   public Command runSysIdRoutine()
   {
     return (m_sysIdRoutine.dynamic(Direction.kForward).until(atMax))
+        .andThen(new InstantCommand(() -> {
+          try {
+            m_sysIdRoutine.wait(5000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }))
         .andThen(m_sysIdRoutine.dynamic(Direction.kReverse).until(atMin))
+        .andThen(new InstantCommand(() -> {
+          try {
+            m_sysIdRoutine.wait(5000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }))
         .andThen(m_sysIdRoutine.quasistatic(Direction.kForward).until(atMax))
+        .andThen(new InstantCommand(() -> {
+          try {
+            m_sysIdRoutine.wait(5000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }))
         .andThen(m_sysIdRoutine.quasistatic(Direction.kReverse).until(atMin))
-         .andThen(Commands.print("DONE"));
+         
+        .andThen(Commands.print("DONE"));
   }
 
 
@@ -308,6 +334,10 @@ public class ElevatorSubsystem extends SubsystemBase
     m_motor.set(0.0);
   }
 
+  public Command stopC()
+  {
+    return run(() -> m_motor.setVoltage(0.0));
+  }
   /**
    * Update telemetry, including the mechanism visualization.
    */
