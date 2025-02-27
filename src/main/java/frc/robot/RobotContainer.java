@@ -223,9 +223,9 @@ m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA 
       // altXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer altXbox
-      altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
+      //altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
       // altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
-      altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      //altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       // altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
