@@ -165,10 +165,10 @@ public class RobotContainer
     } else
     {
 
-      driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
-      driverXbox.b().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
-      driverXbox.x().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
-      driverXbox.y().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
+      driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
+      driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+      driverXbox.x().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
+      driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
 //    driverXbox.button(1).whileTrue(arm.setGoal(15));
     //driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(0.1));
 
@@ -215,9 +215,9 @@ m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA 
       // altXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer altXbox
-      altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
+      //altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
       // altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
-      altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      //altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       // altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
