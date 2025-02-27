@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -164,13 +165,16 @@ public class RobotContainer
     } else
     {
 
-      driverXbox.x().whileTrue(m_elevatorSubsystem.setGoal(0.0));
+      driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
+      driverXbox.b().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+      driverXbox.x().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
+      driverXbox.y().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
 //    driverXbox.button(1).whileTrue(arm.setGoal(15));
-    driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(0.1));
+    //driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(0.1));
 
-    driverXbox.rightBumper().whileTrue(m_elevatorSubsystem.setGoal(0.5));
+    //driverXbox.rightBumper().whileTrue(m_elevatorSubsystem.setGoal(0.5));
 
-    driverXbox.leftBumper().whileTrue(m_elevatorSubsystem.setGoal(1));
+    //driverXbox.leftBumper().whileTrue(m_elevatorSubsystem.setGoal(1));
 
 
 //    driverXbox.button(5).whileTrue(arm.runSysIdRoutine());
@@ -199,9 +203,9 @@ m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA 
       // driverXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer driverXbox
-      driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
+      //driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
       // driverXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
-      driverXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      //driverXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       // driverXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // elevator altXbox

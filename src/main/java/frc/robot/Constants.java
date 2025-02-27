@@ -82,6 +82,12 @@ public final class Constants
     public static final Distance kMinElevatorHeight = Meters.of(0.0);
     public static final Distance kMaxElevatorHeight = Meters.of(2);
 
+    // these are the height above L1 in meters
+    public static final double L1Height = 0; // L1 is 1ft, 6in off the ground
+    public static final double L2Height = 0.352425; // L2 is 2ft, 7 and 7/8in off the ground
+    public static final double L3Height = 0.752475; // L3 is 3ft, 11 and 5/8in off the ground
+    public static final double L4Height = 1.3716; // L4 is 6ft, 0in off the ground
+
 
     public static double kElevatorRampRate = 0.5;
     public static int    kElevatorCurrentLimit = 30;
