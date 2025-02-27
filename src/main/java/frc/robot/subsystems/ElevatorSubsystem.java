@@ -159,6 +159,24 @@ public class ElevatorSubsystem extends SubsystemBase
   }
 
   /**
+   * Raises the elevator by one level
+   * @return {@link edu.wpi.first.wpilibj2.command.Command}
+   */
+  public Command goToHigherLevel(){
+    increaseGoal();
+    return setGoal(lHeights[currentGoal]);
+  }
+
+  /**
+   * Lowers the elevator by one level
+   * @return {@link edu.wpi.first.wpilibj2.command.Command}
+   */
+  public Command goToLowerLevel(){
+    decreaseGoal();
+    return setGoal(lHeights[currentGoal]);
+  }
+
+  /**
    * Increment the goal to one level higher.
    */
   public void increaseGoal(){

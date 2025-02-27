@@ -186,34 +186,29 @@ public class RobotContainer
       driverXbox.povLeft().whileTrue(drivebase.drivePOV(1, 0, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
       driverXbox.povRight().whileTrue(drivebase.drivePOV(-1, 0, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
 
+      //driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
 
-      driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-
+      // for testing: use a, b, x, y to move the elevator to L1, L2, L3, L4
       driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
       driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
       driverXbox.x().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
       driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
-      driverXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(true));
-      driverXbox.rightBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
+
+      // manually raise and lower the ellvator
+      driverXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
+      driverXbox.rightBumper().onTrue(m_elevatorSubsystem.raiseCommand(true));
       driverXbox.leftBumper().onFalse(m_elevatorSubsystem.stopC());
-      driverXbox.leftBumper().onTrue(m_elevatorSubsystem.stopC());
+      driverXbox.rightBumper().onFalse(m_elevatorSubsystem.stopC());
 
-//    driverXbox.button(1).whileTrue(arm.setGoal(15));
-    //driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(0.1));
+      // Ideally we want to use this or something similar in competition.
+      // right trigger moves the elevator one level higher, left trigger moves one level lower.
+      driverXbox.rightTrigger().onTrue(m_elevatorSubsystem.goToHigherLevel());
+      driverXbox.leftTrigger().onTrue(m_elevatorSubsystem.goToLowerLevel());
 
-    //driverXbox.rightBumper().whileTrue(m_elevatorSubsystem.setGoal(0.5));
+      //driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.stopC());
+      //driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.setGoal(2));
 
-    //driverXbox.leftBumper().whileTrue(m_elevatorSubsystem.setGoal(1));
-
-
-//    driverXbox.button(5).whileTrue(arm.runSysIdRoutine());
-    driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.stopC());
-
-
-    driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.setGoal(2));
-//    driverXbox.button(6).whileTrue(setElevArm(10, 70));
-
-m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA HAAAAA"));
+      m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA HAAAAA"));
       // driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       // driverXbox.b().whileTrue(
@@ -244,10 +239,10 @@ m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA 
       // altXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer altXbox
-      altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
-      altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
-      altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
-      altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      //altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
+      //altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      //altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      //altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // automatic coral intake
       noCoralIntakeTrigger.whileFalse(m_coralPlacerSubsystem.placerForward());
