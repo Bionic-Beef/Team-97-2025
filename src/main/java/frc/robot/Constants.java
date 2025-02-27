@@ -93,6 +93,7 @@ public final class Constants
     public static int    kElevatorCurrentLimit = 30;
     public static double kMaxVelocity = Meters.of(2).per(Second).in(MetersPerSecond);
     public static double kMaxAcceleration = Meters.of(4).per(Second).per(Second).in(MetersPerSecondPerSecond);
+    public static double kTolerance = 0.1;
 
   }
 

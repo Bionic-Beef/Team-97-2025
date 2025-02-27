@@ -23,7 +23,10 @@ import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.commands.SetElevatorPosition;
 import swervelib.SwerveInputStream;
+import frc.robot.commands.SetElevatorPosition;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -165,10 +168,15 @@ public class RobotContainer
     } else
     {
 
-      driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
-      driverXbox.b().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
-      driverXbox.x().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
-      driverXbox.y().whileTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
+      driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
+      driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+      driverXbox.x().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
+      driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
+      driverXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(true));
+      driverXbox.rightBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
+      driverXbox.leftBumper().onFalse(m_elevatorSubsystem.stopC());
+      driverXbox.leftBumper().onTrue(m_elevatorSubsystem.stopC());
+
 //    driverXbox.button(1).whileTrue(arm.setGoal(15));
     //driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(0.1));
 

@@ -323,7 +323,7 @@ public class ElevatorSubsystem extends SubsystemBase
    */
   public Command setGoal(double goal)
   {
-    return run(() -> reachGoal(goal));
+    return run(() -> reachGoal(goal)).finallyDo(() -> stop());
   }
 
   /**
@@ -332,6 +332,12 @@ public class ElevatorSubsystem extends SubsystemBase
   public void stop()
   {
     m_motor.set(0.0);
+  }
+
+  public Command raiseCommand(Boolean raise) {
+    return run(() -> {
+        m_motor.set((raise) ? 0.1 : -0.1);
+    });
   }
 
   public Command stopC()
