@@ -19,12 +19,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.commands.SetElevatorPosition;
 import swervelib.SwerveInputStream;
+import frc.robot.commands.SetElevatorPosition;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -184,33 +188,60 @@ public class RobotContainer
 
 
       driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+
+      driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
+      driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+      driverXbox.x().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
+      driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
+      driverXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(true));
+      driverXbox.rightBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
+      driverXbox.leftBumper().onFalse(m_elevatorSubsystem.stopC());
+      driverXbox.leftBumper().onTrue(m_elevatorSubsystem.stopC());
+
+//    driverXbox.button(1).whileTrue(arm.setGoal(15));
+    //driverXbox.a().whileTrue(m_elevatorSubsystem.setGoal(0.1));
+
+    //driverXbox.rightBumper().whileTrue(m_elevatorSubsystem.setGoal(0.5));
+
+    //driverXbox.leftBumper().whileTrue(m_elevatorSubsystem.setGoal(1));
+
+
+//    driverXbox.button(5).whileTrue(arm.runSysIdRoutine());
+    driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.stopC());
+
+
+    driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.setGoal(2));
+//    driverXbox.button(6).whileTrue(setElevArm(10, 70));
+
+m_elevatorSubsystem.atHeight(5, 0.1).whileTrue(Commands.print("I AM ALIVE, YAAA HAAAAA"));
+      // driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       // driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      driverXbox.b().whileTrue(
-          drivebase.driveCommand(() -> 1.0, () -> 0.0,() -> 0.0)
-                              );
+      // driverXbox.b().whileTrue(
+      //     drivebase.driveCommand(() -> 1.0, () -> 0.0,() -> 0.0)
+      //                         );
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverXbox.rightBumper().whileTrue(drivebase.AimAtBestTarget());
+      // driverXbox.rightBumper().whileTrue(drivebase.AimAtBestTarget());
 
       // elevator driverXbox
-      driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
-      driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
-      driverXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
-      driverXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
+      // driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
+      // driverXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // driverXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer driverXbox
-      driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
-      driverXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
-      driverXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
-      driverXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      //driverXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
+      // driverXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      //driverXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      // driverXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // elevator altXbox
-      altXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
-      altXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
-      altXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
-      altXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // altXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
+      // altXbox.leftTrigger().whileTrue(m_elevatorSubsystem.lowerElevatorCommand());
+      // altXbox.rightTrigger().onFalse(m_elevatorSubsystem.stopElevator());
+      // altXbox.leftTrigger().onFalse(m_elevatorSubsystem.stopElevator());
 
       // coral placer altXbox
       altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
@@ -221,6 +252,10 @@ public class RobotContainer
       // automatic coral intake
       noCoralIntakeTrigger.whileFalse(m_coralPlacerSubsystem.placerForward());
       noCoralIntakeTrigger.onTrue(m_coralPlacerSubsystem.stopCoralPlacer());
+      //altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
+      // altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      //altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      // altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
   }

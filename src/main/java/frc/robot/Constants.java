@@ -4,10 +4,19 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Second;
+
+import java.security.DigestInputStream;
 import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.measure.Distance;
 import swervelib.math.Matter;
 
 /**
@@ -55,6 +64,37 @@ public final class Constants
   public static class ElevatorConstants{
     public static final int elevatorLeaderID = (Integer) 13;
     public static final int elevatorFollowerID = (Integer) 14;
+    public static final double kElevatorKp = 4.5;
+    public static final double kElevatorKi = 0;
+    public static final double kElevatorKd = 0;//1.6047; 
+
+    public static final double kElevatorkS = 0.0;//1964; // volts (V)
+    public static final double kElevatorkV = 0; //3.894; // volt per velocity (V/(m/s))
+    public static final double kElevatorkA = 0;//0.173; // volt per acceleration (V/(m/s²))
+    public static final double kElevatorkG = 0;//0.91274; // volts (V)
+
+    public static final double kElevatorGearing    = (115/6);
+    public static final double kElevatorDrumRadius = Units.inchesToMeters(1.5);
+    public static final double kCarriageMass       = 6; // kg
+
+    // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
+    public static final Distance kStartingHeightSim = Meters.of(0);
+    public static final Distance kMinElevatorHeight = Meters.of(0.0);
+    public static final Distance kMaxElevatorHeight = Meters.of(2);
+
+    // these are the height above L1 in meters
+    public static final double L1Height = 0; // L1 is 1ft, 6in off the ground
+    public static final double L2Height = 0.352425; // L2 is 2ft, 7 and 7/8in off the ground
+    public static final double L3Height = 0.752475; // L3 is 3ft, 11 and 5/8in off the ground
+    public static final double L4Height = 1.3716; // L4 is 6ft, 0in off the ground
+
+
+    public static double kElevatorRampRate = 0.5;
+    public static int    kElevatorCurrentLimit = 30;
+    public static double kMaxVelocity = Meters.of(1).per(Second).in(MetersPerSecond); //2
+    public static double kMaxAcceleration = Meters.of(4).per(Second).per(Second).in(MetersPerSecondPerSecond);
+    public static double kTolerance = 0.05; //0.1
+
   }
 
   public static class CoralPlacerConstants{

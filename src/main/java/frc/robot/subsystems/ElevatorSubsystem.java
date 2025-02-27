@@ -1,48 +1,405 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Millimeters;
+import static edu.wpi.first.units.Units.Minute;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.controls.Follower;
+import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-//import com.revrobotics.servohub.ServoHub.ResetMode;
-import com.revrobotics.spark.SparkLowLevel;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElevatorConstants;
 
-public class ElevatorSubsystem {
-    private SparkMax elevatorLeader = new SparkMax(ElevatorConstants.elevatorLeaderID, SparkLowLevel.MotorType.kBrushless);
-    private SparkMax elevatorFollower = new SparkMax(ElevatorConstants.elevatorFollowerID, SparkLowLevel.MotorType.kBrushless);
-    private SparkMaxConfig followerConfig = new SparkMaxConfig();
+public class ElevatorSubsystem extends SubsystemBase
+{
+  public final double[] lHeights = {ElevatorConstants.L1Height, ElevatorConstants.L2Height, ElevatorConstants.L3Height, ElevatorConstants.L4Height};
+  public int currentGoal;
 
-    private double elevatorSpeed = 0.2;
+  public final Trigger atMin = new Trigger(() -> getLinearPosition().isNear(ElevatorConstants.kMinElevatorHeight,
+                                                                            Inches.of(3)));
+  public final Trigger atMax = new Trigger(() -> getLinearPosition().isNear(ElevatorConstants.kMaxElevatorHeight,
+                                                                            Inches.of(3)));
 
-    public ElevatorSubsystem(){
-        followerConfig.follow(ElevatorConstants.elevatorLeaderID, true);
-        elevatorFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+  // This gearbox represents a gearbox containing 1 Neo
+  private final DCMotor m_elevatorGearbox = DCMotor.getNEO(1);
+
+  // Standard classes for controlling our elevator
+  ElevatorFeedforward m_feedforward =
+      new ElevatorFeedforward(
+          ElevatorConstants.kElevatorkS,
+          ElevatorConstants.kElevatorkG,
+          ElevatorConstants.kElevatorkV,
+          ElevatorConstants.kElevatorkA);
+  private final SparkMax        m_motor    = new SparkMax(ElevatorConstants.elevatorLeaderID, MotorType.kBrushless);
+  private final SparkMax followerSparkMax = new SparkMax(ElevatorConstants.elevatorFollowerID, MotorType.kBrushless);
+  private final RelativeEncoder m_encoder  = m_motor.getEncoder();
+  private final SparkMaxSim     m_motorSim = new SparkMaxSim(m_motor, m_elevatorGearbox);
+
+
+  // private final DigitalInput m_limitSwitchLow    = new DigitalInput(1);
+
+  private final ProfiledPIDController m_controller = new ProfiledPIDController(ElevatorConstants.kElevatorKp,
+                                                                               ElevatorConstants.kElevatorKi,
+                                                                               ElevatorConstants.kElevatorKd,
+                                                                               new Constraints(ElevatorConstants.kMaxVelocity,
+                                                                                               ElevatorConstants.kMaxAcceleration));
+
+  // Simulation classes help us simulate what's going on, including gravity.
+  private final ElevatorSim m_elevatorSim =
+      new ElevatorSim(
+          m_elevatorGearbox,
+          ElevatorConstants.kElevatorGearing,
+          ElevatorConstants.kCarriageMass,
+          ElevatorConstants.kElevatorDrumRadius,
+          ElevatorConstants.kMinElevatorHeight.in(Meters),
+          ElevatorConstants.kMaxElevatorHeight.in(Meters),
+          true,
+          ElevatorConstants.kStartingHeightSim.in(Meters),
+          0.01,
+          0.0);
+
+
+  // SysId Routine and seutp
+  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  private final MutVoltage        m_appliedVoltage = Volts.mutable(0);
+  // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+  private final MutDistance       m_distance       = Meters.mutable(0);
+  private final MutAngle          m_rotations      = Rotations.mutable(0);
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+  private final MutLinearVelocity m_velocity       = MetersPerSecond.mutable(0);
+  // SysID Routine
+  private final SysIdRoutine      m_sysIdRoutine   =
+      new SysIdRoutine(
+          // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+          new SysIdRoutine.Config(Volts.per(Second).of(1),
+                                  Volts.of(7),
+                                  Seconds.of(10)),
+          new SysIdRoutine.Mechanism(
+              // Tell SysId how to plumb the driving voltage to the motor(s).
+              m_motor::setVoltage,
+              // Tell SysId how to record a frame of data for each motor on the mechanism being
+              // characterized.
+              log -> {
+                // Record a frame for the shooter motor.
+                log.motor("elevator")
+                   .voltage(
+                       m_appliedVoltage.mut_replace(
+                           m_motor.getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                   .linearPosition(m_distance.mut_replace(getHeightMeters(),
+                                                          Meters)) // Records Height in Meters via SysIdRoutineLog.linearPosition
+                   .linearVelocity(m_velocity.mut_replace(getVelocityMetersPerSecond(),
+                                                          MetersPerSecond)); // Records velocity in MetersPerSecond via SysIdRoutineLog.linearVelocity
+              },
+              this));
+
+  /**
+   * Subsystem constructor.
+   */
+  public ElevatorSubsystem()
+  {
+    SparkMaxConfig config = new SparkMaxConfig();
+    config
+        .smartCurrentLimit(ElevatorConstants.kElevatorCurrentLimit)
+        .closedLoopRampRate(ElevatorConstants.kElevatorRampRate)
+        .closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .outputRange(-1, 1);
+    m_motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    SparkMaxConfig followerConfig = new SparkMaxConfig();
+    followerConfig
+      // .inverted(false)
+        .follow(ElevatorConstants.elevatorLeaderID, true);
+
+    followerSparkMax.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    // Publish Mechanism2d to SmartDashboard
+    // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
+    
+    seedElevatorMotorPosition();
+  }
+
+  /**
+   * Increment the goal to one level higher.
+   */
+  public void increaseGoal(){
+    if (currentGoal < 4){
+      currentGoal += 1;
     }
+  }
 
-    public Command raiseElevatorCommand(){
-        return Commands.run(() -> {
-            elevatorLeader.set(elevatorSpeed);
-        });
+  /**
+   * Decrement the goal to one level lower.
+   */
+  public void decreaseGoal(){
+    if (currentGoal > 0){
+      currentGoal -= 1;
     }
+  }
 
-    public Command lowerElevatorCommand(){
-        return Commands.run(() -> {
-            elevatorLeader.set(-elevatorSpeed);
-        });
-    }
+  /**
+   * Advance the simulation.
+   */
+  public void simulationPeriodic()
+  {
+    // In this method, we update our simulation of what our elevator is doing
+    // First, we set our "inputs" (voltages)
+    m_elevatorSim.setInput(m_motorSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
 
-    public Command stopElevator(){
-        return Commands.run(() -> {
-            elevatorLeader.set(0);
-        });
-    }
+    // Next, we update it. The standard loop time is 20ms.
+    m_elevatorSim.update(0.020);
+
+    // Finally, we set our simulated encoder's readings and simulated battery voltage
+    m_motorSim.iterate(
+        Elevator.convertDistanceToRotations(Meters.of(m_elevatorSim.getVelocityMetersPerSecond())).per(Second).in(RPM),
+        RoboRioSim.getVInVoltage(),
+        0.020);
+
+    // SimBattery estimates loaded battery voltages
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSim.getCurrentDrawAmps()));
+
+  }
+
+  /**
+   * Seed the elevator motor encoder with the sensed position from the LaserCAN which tells us the height of the
+   * elevator.
+   */
+  public void seedElevatorMotorPosition()
+  {
+    m_encoder.setPosition(Elevator.convertDistanceToRotations(Millimeters.of(5))
+    .in(Rotations));
+    // if (RobotBase.isSimulation())
+    // {
+    //   // // Change distance field
+    //   // measurement.distance_mm = (int) (Math.floor(Meters.of(m_elevatorSim.getPositionMeters()).in(Millimeters)) -
+    //   //                                  ElevatorConstants.kLaserCANOffset.in(Millimeters));
+    //   // // Update simulation distance field.
+    //   // m_elevatorLaserCanSim.setMeasurementFullSim(measurement);
+
+    //   // m_encoder.setPosition(Elevator.convertDistanceToRotations(Millimeters.of(
+    //   //                                   m_elevatorLaserCanSim.getMeasurement().distance_mm + ElevatorConstants.kLaserCANOffset.in(Millimeters)))
+    //   //                               .in(Rotations));
+    // } else
+    // {
+
+    // }
+  }
+
+  /**
+   * Run control loop to reach and maintain goal.
+   *
+   * @param goal the position to maintain
+   */
+  public void reachGoal(double goal)
+  {
+    double voltsOut = MathUtil.clamp(
+        m_controller.calculate(getHeightMeters(), goal) +
+        m_feedforward.calculateWithVelocities(getVelocityMetersPerSecond(),
+                                              m_controller.getSetpoint().velocity), -7, 7);
+    m_motor.setVoltage(voltsOut);
+  }
+
+  /**
+   * Runs the SysId routine to tune the Arm
+   *
+   * @return SysId Routine command
+   */
+  public Command runSysIdRoutine()
+  {
+    return (m_sysIdRoutine.dynamic(Direction.kForward).until(atMax))
+        .andThen(new InstantCommand(() -> {
+          try {
+            m_sysIdRoutine.wait(5000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }))
+        .andThen(m_sysIdRoutine.dynamic(Direction.kReverse).until(atMin))
+        .andThen(new InstantCommand(() -> {
+          try {
+            m_sysIdRoutine.wait(5000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }))
+        .andThen(m_sysIdRoutine.quasistatic(Direction.kForward).until(atMax))
+        .andThen(new InstantCommand(() -> {
+          try {
+            m_sysIdRoutine.wait(5000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }))
+        .andThen(m_sysIdRoutine.quasistatic(Direction.kReverse).until(atMin))
+         
+        .andThen(Commands.print("DONE"));
+  }
+
+
+  /**
+   * Get Elevator Velocity
+   *
+   * @return Elevator Velocity
+   */
+  public LinearVelocity getLinearVelocity()
+  {
+    return Elevator.convertRotationsToDistance(Rotations.of(m_encoder.getVelocity())).per(Minute);
+  }
+
+  /**
+   * Get the height of the Elevator
+   *
+   * @return Height of the elevator
+   */
+  public Distance getLinearPosition()
+  {
+    return Elevator.convertRotationsToDistance(Rotations.of(m_encoder.getPosition()));
+  }
+
+  /**
+   * Get the height in meters.
+   *
+   * @return Height in meters
+   */
+  public double getHeightMeters()
+  {
+    return (m_encoder.getPosition() / ElevatorConstants.kElevatorGearing) *
+           (2 * Math.PI * ElevatorConstants.kElevatorDrumRadius);
+  }
+
+  /**
+   * The velocity of the elevator in meters per second.
+   *
+   * @return velocity in meters per second
+   */
+  public double getVelocityMetersPerSecond()
+  {
+    return ((m_encoder.getVelocity() / 60)/ ElevatorConstants.kElevatorGearing) *
+           (2 * Math.PI * ElevatorConstants.kElevatorDrumRadius);
+  }
+
+  /**
+   * A trigger for when the height is at an acceptable tolerance.
+   *
+   * @param height    Height in Meters
+   * @param tolerance Tolerance in meters.
+   * @return {@link Trigger}
+   */
+  public Trigger atHeight(double height, double tolerance)
+  {
+    return new Trigger(() -> MathUtil.isNear(height,
+                                             getHeightMeters(),
+                                             tolerance));
+  }
+
+  /**
+   * Set the goal of the elevator
+   *
+   * @param goal Goal in meters
+   * @return {@link edu.wpi.first.wpilibj2.command.Command}
+   */
+  public Command setGoal(double goal)
+  {
+    return run(() -> reachGoal(goal)).finallyDo(() -> stop());
+  }
+
+  /**
+   * Stop the control loop and motor output.
+   */
+  public void stop()
+  {
+    m_motor.set(0.0);
+  }
+
+  public Command raiseCommand(Boolean raise) {
+    return run(() -> {
+        m_motor.set((raise) ? 0.1 : -0.1);
+    });
+  }
+
+  public Command stopC()
+  {
+    return run(() -> m_motor.setVoltage(0.0));
+  }
+  /**
+   * Update telemetry, including the mechanism visualization.
+   */
+  public void updateTelemetry()
+  {
+  }
+
+  @Override
+  public void periodic()
+  {
+  }
+
+    public class Elevator{
+        /**
+         * Convert {@link Distance} into {@link Angle}
+         *
+         * @param distance Distance, usually Meters.
+         * @return {@link Angle} equivalent to rotations of the motor.
+         */
+        public static Angle convertDistanceToRotations(Distance distance)
+        {
+          return Rotations.of(distance.in(Meters) /
+                              (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI) *
+                              ElevatorConstants.kElevatorGearing);
+        }
+
+        /**
+         * Convert {@link Angle} into {@link Distance}
+         *
+         * @param rotations Rotations of the motor
+         * @return {@link Distance} of the elevator.
+         */
+        public static Distance convertRotationsToDistance(Angle rotations)
+        {
+          return Meters.of((rotations.in(Rotations) / ElevatorConstants.kElevatorGearing) *
+                           (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI));
+        }
+    };
 }
