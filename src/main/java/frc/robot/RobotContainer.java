@@ -22,6 +22,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -42,7 +43,10 @@ public class RobotContainer
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
-  public static final DigitalInput m_noCoralInIntakeSensor = new DigitalInput(Constants.CoralPlacerConstants.sensorDIO);
+  public final RGB m_RGB = new RGB(9);
+
+  public static final DigitalInput m_noCoralInIntakeSensor = new DigitalInput(2);
+  public static boolean coralInIntake() { return !m_noCoralInIntakeSensor.get();}
   public static Trigger noCoralIntakeTrigger = new Trigger(m_noCoralInIntakeSensor::get);
 
   // Applies deadbands and inverts controls because joysticks
@@ -130,6 +134,7 @@ public class RobotContainer
   {
     // Configure the trigger bindings
     configureBindings();
+    m_RGB.LEDs.setRGB(7, 128, 128, 128);
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
   }
@@ -214,7 +219,7 @@ public class RobotContainer
       altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // automatic coral intake
-      noCoralIntakeTrigger.onFalse(m_coralPlacerSubsystem.placerForward());
+      noCoralIntakeTrigger.whileFalse(m_coralPlacerSubsystem.placerForward());
       noCoralIntakeTrigger.onTrue(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
