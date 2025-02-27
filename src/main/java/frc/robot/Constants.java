@@ -91,9 +91,9 @@ public final class Constants
 
     public static double kElevatorRampRate = 0.5;
     public static int    kElevatorCurrentLimit = 30;
-    public static double kMaxVelocity = Meters.of(2).per(Second).in(MetersPerSecond);
+    public static double kMaxVelocity = Meters.of(1).per(Second).in(MetersPerSecond); //2
     public static double kMaxAcceleration = Meters.of(4).per(Second).per(Second).in(MetersPerSecondPerSecond);
-    public static double kTolerance = 0.1;
+    public static double kTolerance = 0.05; //0.1
 
   }
 

@@ -51,6 +51,8 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase
 {
+  public final double[] lHeights = {ElevatorConstants.L1Height, ElevatorConstants.L2Height, ElevatorConstants.L3Height, ElevatorConstants.L4Height};
+  public int currentGoal;
 
   public final Trigger atMin = new Trigger(() -> getLinearPosition().isNear(ElevatorConstants.kMinElevatorHeight,
                                                                             Inches.of(3)));
@@ -154,6 +156,24 @@ public class ElevatorSubsystem extends SubsystemBase
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
     
     seedElevatorMotorPosition();
+  }
+
+  /**
+   * Increment the goal to one level higher.
+   */
+  public void increaseGoal(){
+    if (currentGoal < 4){
+      currentGoal += 1;
+    }
+  }
+
+  /**
+   * Decrement the goal to one level lower.
+   */
+  public void decreaseGoal(){
+    if (currentGoal > 0){
+      currentGoal -= 1;
+    }
   }
 
   /**
