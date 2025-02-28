@@ -1,2 +1,1 @@
-Helpful Links:
-https://github.com/wpilibsuite/allwpilib/blob/main/apriltag/src/main/native/resources/edu/wpi/first/apriltag/2025-reefscape-andymark.json
+2025 Reefscape Code
