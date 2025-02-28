@@ -52,7 +52,7 @@ import frc.robot.Constants.ElevatorConstants;
 public class ElevatorSubsystem extends SubsystemBase
 {
   public final double[] lHeights = {ElevatorConstants.L1Height, ElevatorConstants.L2Height, ElevatorConstants.L3Height, ElevatorConstants.L4Height};
-  public int currentGoal;
+  public int currentGoal = 0;
 
   public final Trigger atMin = new Trigger(() -> getLinearPosition().isNear(ElevatorConstants.kMinElevatorHeight,
                                                                             Inches.of(3)));

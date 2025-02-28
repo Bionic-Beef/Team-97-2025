@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import java.io.File;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -11,6 +13,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -28,6 +31,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.commands.SetElevatorPosition;
 import swervelib.SwerveInputStream;
 import frc.robot.commands.SetElevatorPosition;
+
 
 
 /**
@@ -205,6 +209,8 @@ public class RobotContainer
       driverXbox.rightTrigger().onTrue(m_elevatorSubsystem.goToHigherLevel());
       driverXbox.leftTrigger().onTrue(m_elevatorSubsystem.goToLowerLevel());
 
+      driverXbox.start().whileTrue(drivebase.driveToPose(new Pose2d(Inches.of(530.49 + 11), Inches.of(130.17 - 19.05), new Rotation2d(2.094395102)))); //300-180 degrees
+
       //driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.stopC());
       //driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.setGoal(2));
 
@@ -214,7 +220,8 @@ public class RobotContainer
       // driverXbox.b().whileTrue(
       //     drivebase.driveCommand(() -> 1.0, () -> 0.0,() -> 0.0)
       //                         );
-      driverXbox.start().whileTrue(Commands.none());
+
+      //driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
