@@ -164,6 +164,7 @@ public class ElevatorSubsystem extends SubsystemBase
    */
   public Command goToHigherLevel(){
     increaseGoal();
+    System.out.println(currentGoal);
     return setGoal(lHeights[currentGoal]);
   }
 
@@ -180,7 +181,7 @@ public class ElevatorSubsystem extends SubsystemBase
    * Increment the goal to one level higher.
    */
   public void increaseGoal(){
-    if (currentGoal < 4){
+    if (currentGoal < 3){
       currentGoal += 1;
     }
   }
