@@ -47,7 +47,7 @@ public class RobotContainer
   final         CommandXboxController altXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                                "swerve/bionic-beef-WEEK-0"));
+                                                                                "swerve/bionic-beef-WEEK-1"));
   private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
@@ -191,7 +191,7 @@ public class RobotContainer
       driverXbox.povRight().whileTrue(drivebase.drivePOV(-1, 0, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
 
       //driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-
+      driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
       // THIS WORKS
       // use a, b, y to move the elevator to L1, L2, L3
       driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
@@ -205,7 +205,18 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(m_elevatorSubsystem.raiseCommand(true));
       driverXbox.leftBumper().onFalse(m_elevatorSubsystem.stopC());
       driverXbox.rightBumper().onFalse(m_elevatorSubsystem.stopC());
+   // use a, b, y to move the elevator to L1, L2, L3
+      altXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
+      altXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+      altXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
+      // we can't mechanically reach L4 aparently?
+      //altXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
 
+      // manually raise and lower the ellvator
+      altXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
+      altXbox.rightBumper().onTrue(m_elevatorSubsystem.raiseCommand(true));
+      altXbox.leftBumper().onFalse(m_elevatorSubsystem.stopC());
+      altXbox.rightBumper().onFalse(m_elevatorSubsystem.stopC());
       // NOT WORKING
       // right trigger moves the elevator one level higher, left trigger moves one level lower.
       //driverXbox.rightTrigger().onTrue(m_elevatorSubsystem.goToHigherLevel());
@@ -225,7 +236,7 @@ public class RobotContainer
       //                         );
 
       //driverXbox.start().whileTrue(Commands.none());
-      driverXbox.back().whileTrue(Commands.none());
+      // driverXbox.back().whileTrue(Commands.none());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.rightBumper().whileTrue(drivebase.AimAtBestTarget());
@@ -264,10 +275,10 @@ public class RobotContainer
       driverXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       driverXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
-      //altXbox.y().whileTrue(m_coralPlacerSubsystem.placerForward());
-      // altXbox.x().whileTrue(m_coralPlacerSubsystem.placerReverse());
-      //altXbox.y().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
-      // altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward());
+      altXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      altXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      altXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
   }
