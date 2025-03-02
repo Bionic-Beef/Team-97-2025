@@ -568,7 +568,7 @@ public class SwerveSubsystem extends SubsystemBase
       // Make the robot move
       swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
                             -robotLeft * swerveDrive.getMaximumChassisVelocity(),
-                            robotForward * swerveDrive.getMaximumChassisVelocity()), 0.8 * 0.15),
+                            robotForward * swerveDrive.getMaximumChassisVelocity()), 0.8 * 0.15 * 1.5),
                         rotationSupplier.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(),
                         false,
                         false);

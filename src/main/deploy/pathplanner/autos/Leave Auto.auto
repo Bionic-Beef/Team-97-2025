@@ -7,13 +7,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 10.0
+            "waitTime": 3.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2ft leave auto"
+            "pathName": "2ft leave path"
           }
         }
       ]

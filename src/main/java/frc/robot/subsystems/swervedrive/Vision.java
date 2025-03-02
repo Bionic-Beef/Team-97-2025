@@ -372,23 +372,23 @@ public class Vision
   enum Cameras
   {
     /**
-     * Left Camera
+     * Front Camera
      */
     FRONT_CAMERA("front_camera",
              new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)),
              new Translation3d(Units.inchesToMeters(11),
                                Units.inchesToMeters(0),
                                Units.inchesToMeters(1)),
-             VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1)),
+             VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1));
     /**
-     * Right Camera
+     * Back Camera
      */
-    BACK_CAMERA("back_camera",
-            new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)),
-            new Translation3d(Units.inchesToMeters(-11),
-                              Units.inchesToMeters(0),
-                              Units.inchesToMeters(1)),
-            VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1));
+    // BACK_CAMERA("back_camera",
+            // new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)),
+            // new Translation3d(Units.inchesToMeters(-11),
+            //                   Units.inchesToMeters(0),
+            //                   Units.inchesToMeters(1)),
+            // VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1));
     /**
      * Center Camera
      */
