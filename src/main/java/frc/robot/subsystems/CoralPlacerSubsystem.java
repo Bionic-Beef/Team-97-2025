@@ -12,19 +12,25 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 //import com.revrobotics.servohub.ServoHub.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import frc.robot.Constants.CoralPlacerConstants;
 
 public class CoralPlacerSubsystem extends SubsystemBase{
     private SparkMax placerMotor = new SparkMax(CoralPlacerConstants.placerMotorID, SparkLowLevel.MotorType.kBrushless);
-    private final double placerSpeed = 0.2;
+    private SparkMaxConfig config = new SparkMaxConfig();
+    private final double intakeSpeed = 0.2;
+    private final double placerSpeed = 0.5;
 
-    public CoralPlacerSubsystem(){}
+    public CoralPlacerSubsystem(){
+        config.idleMode(IdleMode.kBrake);
+        placerMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
 
-    public Command placerForward(){
+    public Command placerForward(double speed){
         return Commands.run(() -> {
-            placerMotor.set(placerSpeed);
+            placerMotor.set(speed);
         });
     }
 

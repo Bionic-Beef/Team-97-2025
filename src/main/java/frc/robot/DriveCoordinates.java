@@ -1,10 +1,16 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+
 import static edu.wpi.first.units.Units.Inches;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 
 public class DriveCoordinates {
+    AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     //robot width and length are NOT PRECISE. need to measure!
     private static final double robotWidth = 34.0; //the width of the robot with bumper in inches
@@ -15,10 +21,15 @@ public class DriveCoordinates {
     public DriveCoordinates(){}
 
     public Pose2d getPose2d(int aprilTag, boolean faceToward){
-        double tagX = 530.49;
-        double tagY = 130.17;
-        double thetaDegrees = 300;
+        double tag6X = 530.49;
+        double tag6Y = 130.17;
+        double thetaDegrees6 = 300;
         // ^ these are for apriltag 6
+
+        Pose3d tagPose3D = layout.getTagPose(6).get();
+        double tagX = tagPose3D.getX();
+        double tagY = tagPose3D.getY();
+        double thetaDegrees = tagPose3D.getRotation().getAngle();
 
         double targetX = tagX + ((robotLength + offset) / 2) * Math.cos(thetaDegrees);
         double targetY = tagY + ((robotLength + offset) / 2) * Math.sin(thetaDegrees);

@@ -372,7 +372,7 @@ public class Vision
   enum Cameras
   {
     /**
-     * Left Camera
+     * Front Camera
      */
     FRONT_CAMERA("front_camera",
              new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)),
@@ -381,7 +381,7 @@ public class Vision
                                Units.inchesToMeters(10.75)),
              VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1)),
     /**
-     * Right Camera
+     * Back Camera
      */
     BACK_CAMERA("back_camera",
             new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)),

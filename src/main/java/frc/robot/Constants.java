@@ -64,7 +64,7 @@ public final class Constants
   public static class ElevatorConstants{
     public static final int elevatorLeaderID = (Integer) 13;
     public static final int elevatorFollowerID = (Integer) 14;
-    public static final double kElevatorKp = 4.5;
+    public static final double kElevatorKp = 11.5;
     public static final double kElevatorKi = 0;
     public static final double kElevatorKd = 0;//1.6047; 
 
@@ -80,20 +80,20 @@ public final class Constants
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
     public static final Distance kStartingHeightSim = Meters.of(0);
     public static final Distance kMinElevatorHeight = Meters.of(0.0);
-    public static final Distance kMaxElevatorHeight = Meters.of(2);
+    public static final Distance kMaxElevatorHeight = Meters.of(0.852475);
 
     // these are the height above L1 in meters
     public static final double L1Height = 0; // L1 is 1ft, 6in off the ground
     public static final double L2Height = 0.352425; // L2 is 2ft, 7 and 7/8in off the ground
-    public static final double L3Height = 0.752475; // L3 is 3ft, 11 and 5/8in off the ground
+    public static final double L3Height = 0.695;//0.752475; // L3 is 3ft, 11 and 5/8in off the ground
     public static final double L4Height = 1.3716; // L4 is 6ft, 0in off the ground
 
 
-    public static double kElevatorRampRate = 0.5;
+    public static double kElevatorRampRate = 1.5;
     public static int    kElevatorCurrentLimit = 30;
-    public static double kMaxVelocity = Meters.of(1).per(Second).in(MetersPerSecond); //2
-    public static double kMaxAcceleration = Meters.of(4).per(Second).per(Second).in(MetersPerSecondPerSecond);
-    public static double kTolerance = 0.05; //0.1
+    public static double kMaxVelocity = Meters.of(0.1).per(Second).in(MetersPerSecond); //2
+    public static double kMaxAcceleration = Meters.of(0.1).per(Second).per(Second).in(MetersPerSecondPerSecond);
+    public static double kTolerance = 0.01; //0.1
 
   }
 

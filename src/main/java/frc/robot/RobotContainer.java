@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -82,9 +83,10 @@ public class RobotContainer
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                 () -> driverXbox.getLeftY() * -1,
                                                                 () -> driverXbox.getLeftX() * -1)
-                                                            .withControllerRotationAxis(driverXbox::getRightX)
+                                                            .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
                                                             .deadband(OperatorConstants.DEADBAND)
-                                                            .scaleTranslation(0.5)
+                                                            .scaleTranslation(1.0)
+                                                            .scaleRotation(0.6)
                                                             .allianceRelativeControl(true);
 
   /**
@@ -182,7 +184,7 @@ public class RobotContainer
     {
       // drive robot relative with D pad
       driverXbox.povUp().whileTrue(drivebase.drivePOV(0, -1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
-      driverXbox.povUpLeft().whileTrue(drivebase.drivePOV(1, -1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
+      driverXbox.povUpLeft().whileTrue(drivebase.drivePOV(1, 1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
       driverXbox.povUpRight().whileTrue(drivebase.drivePOV(-1, -1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
       driverXbox.povDown().whileTrue(drivebase.drivePOV(0, 1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
       driverXbox.povDownLeft().whileTrue(drivebase.drivePOV(1, 1, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
@@ -266,21 +268,28 @@ public class RobotContainer
       //altXbox.x().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // automatic coral intake
-      noCoralIntakeTrigger.whileFalse(m_coralPlacerSubsystem.placerForward());
+      noCoralIntakeTrigger.whileFalse(m_coralPlacerSubsystem.placerForward(0.2));
       noCoralIntakeTrigger.onTrue(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // place coral
-      driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward());
+      driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
       driverXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());
       driverXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       driverXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
-      altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward());
+      altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
       altXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());
       altXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       altXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
     }
 
+  }
+
+  public Command driveForward(){
+    System.out.println("Tried to auto");
+    Pose2d pose = drivebase.getPose();
+    Pose2d targetPose = new Pose2d(pose.getX()+0.6, pose.getY(), pose.getRotation()); // red aliance
+    return new InstantCommand(() -> drivebase.driveToPose(targetPose));
   }
 
   /**
@@ -291,6 +300,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
+    //return driveForward();
     return drivebase.getAutonomousCommand("Leave Auto");
   }
 
