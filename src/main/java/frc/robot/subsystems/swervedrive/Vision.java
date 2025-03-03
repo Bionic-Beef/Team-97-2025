@@ -376,18 +376,18 @@ public class Vision
      */
     FRONT_CAMERA("front_camera",
              new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)),
-             new Translation3d(Units.inchesToMeters(11),
+             new Translation3d(Units.inchesToMeters(16), //including wood
                                Units.inchesToMeters(0),
-                               Units.inchesToMeters(1)),
+                               Units.inchesToMeters(10.75)),
              VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1)),
     /**
      * Right Camera
      */
     BACK_CAMERA("back_camera",
             new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)),
-            new Translation3d(Units.inchesToMeters(-11),
+            new Translation3d(Units.inchesToMeters(-14.5),//including wood
                               Units.inchesToMeters(0),
-                              Units.inchesToMeters(1)),
+                              Units.inchesToMeters(7.5)),
             VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1));
     /**
      * Center Camera
