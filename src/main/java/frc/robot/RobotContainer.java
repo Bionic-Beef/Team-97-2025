@@ -83,10 +83,10 @@ public class RobotContainer
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                 () -> driverXbox.getLeftY() * -1,
                                                                 () -> driverXbox.getLeftX() * -1)
-                                                            .withControllerRotationAxis(driverXbox::getRightX)
+                                                            .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(1.0)
-                                                            .scaleRotation(0.75)
+                                                            .scaleRotation(0.6)
                                                             .allianceRelativeControl(true);
 
   /**
@@ -272,12 +272,12 @@ public class RobotContainer
       noCoralIntakeTrigger.onTrue(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // place coral
-      driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.7));
+      driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
       driverXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());
       driverXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       driverXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
-      altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.7));
+      altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
       altXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());
       altXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       altXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
