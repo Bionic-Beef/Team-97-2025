@@ -50,7 +50,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import edu.wpi.first.wpilibj.Preferences;
 
 public class ElevatorSubsystem extends SubsystemBase
 {
@@ -135,11 +137,14 @@ public class ElevatorSubsystem extends SubsystemBase
               },
               this));
 
+  private double L1Setpoint = ElevatorConstants.defaultL1Setpoint;
+  
   /**
    * Subsystem constructor.
    */
   public ElevatorSubsystem()
   {
+    Preferences.initDouble(ElevatorConstants.L1SetpointKey, L1Setpoint);
     SparkMaxConfig config = new SparkMaxConfig();
     config
         .smartCurrentLimit(ElevatorConstants.kElevatorCurrentLimit)

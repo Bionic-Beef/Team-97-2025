@@ -88,13 +88,15 @@ public final class Constants
     public static final double L3Height = 0.695;//0.752475; // L3 is 3ft, 11 and 5/8in off the ground
     public static final double L4Height = 1.3716; // L4 is 6ft, 0in off the ground
 
-
     public static double kElevatorRampRate = 1.5;
     public static int    kElevatorCurrentLimit = 30;
     public static double kMaxVelocity = Meters.of(0.1).per(Second).in(MetersPerSecond); //2
     public static double kMaxAcceleration = Meters.of(0.1).per(Second).per(Second).in(MetersPerSecondPerSecond);
     public static double kTolerance = 0.01; //0.1
 
+    // dashboard preferences
+    public static final String L1SetpointKey = "L1Position";
+    public static final double defaultL1Setpoint = 0.3;
   }
 
   public static class CoralPlacerConstants{

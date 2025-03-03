@@ -20,6 +20,9 @@ public class DriveCoordinates {
 
     public DriveCoordinates(){}
 
+    //work in progress. this will generate Pose2d coordinates relative to any apriltag,
+    // with an offset to the left or right (for aligning to left or right branches),
+    // and facing either away from or toward the tag (for aligning to the reef or coral station).
     public Pose2d getPose2d(int aprilTag, boolean faceToward){
         double tag6X = 530.49;
         double tag6Y = 130.17;
