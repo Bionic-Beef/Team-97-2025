@@ -24,9 +24,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.commands.SetElevatorPosition;
@@ -49,7 +49,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/bionic-beef-WEEK-1"));
-  private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+  public final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
   public final RGB m_RGB = new RGB(9);
@@ -158,6 +158,7 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    //m_elevatorSubsystem.loadPreferences();
     // // (Condition) ? Return-On-True : Return-on-False
     // drivebase.setDefaultCommand(!RobotBase.isSimulation() ?
     //                             driveFieldOrientedAnglularVelocity :
@@ -193,14 +194,14 @@ public class RobotContainer
       driverXbox.povRight().whileTrue(drivebase.drivePOV(-1, 0, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
 
       //driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
+      //driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
+      driverXbox.x().onTrue(m_elevatorSubsystem.goToTestSetpoint());
+
       // THIS WORKS
       // use a, b, y to move the elevator to L1, L2, L3
       driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
       driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
       driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
-      // we can't mechanically reach L4 aparently?
-      //driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
 
       // manually raise and lower the ellvator
       driverXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
@@ -211,8 +212,6 @@ public class RobotContainer
       altXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
       altXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
       altXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
-      // we can't mechanically reach L4 aparently?
-      //altXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
 
       // manually raise and lower the ellvator
       altXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));

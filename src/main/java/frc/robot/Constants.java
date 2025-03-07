@@ -85,7 +85,7 @@ public final class Constants
     // these are the height above L1 in meters
     public static final double L1Height = 0; // L1 is 1ft, 6in off the ground
     public static final double L2Height = 0.352425; // L2 is 2ft, 7 and 7/8in off the ground
-    public static final double L3Height = 0.695;//0.752475; // L3 is 3ft, 11 and 5/8in off the ground
+    public static final double L3Height = 0.752475;//0.695 from week 1; // L3 is 3ft, 11 and 5/8in off the ground
     public static final double L4Height = 1.3716; // L4 is 6ft, 0in off the ground
 
     public static double kElevatorRampRate = 1.5;
@@ -95,8 +95,8 @@ public final class Constants
     public static double kTolerance = 0.01; //0.1
 
     // dashboard preferences
-    public static final String L1SetpointKey = "L1Position";
-    public static final double defaultL1Setpoint = 0.3;
+    public static final String testSetpointKey = "testSetpoint";
+    public static final double defaultTestSetpoint = 0.2;
   }
 
   public static class CoralPlacerConstants{
