@@ -294,7 +294,7 @@ public final class Constants
   public static final class DriveConstants {
     public static final double MAX_LINEAR_SPEED = Units.feetToMeters(15.5);
     public static final double WHEEL_RADIUS = Units.inchesToMeters(1.941);
-    public static final double TRACK_WIDTH_X = Units.inchesToMeters(29.0 - (2.625 * 2);
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(29.0 - (2.625 * 2));
     public static final double TRACK_WIDTH_Y = Units.inchesToMeters(28.0 - (2.625 * 2));
     public static final double DRIVE_BASE_RADIUS =
         Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
