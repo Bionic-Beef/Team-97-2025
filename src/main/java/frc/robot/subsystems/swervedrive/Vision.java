@@ -5,7 +5,7 @@ import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.awt.Desktop;
-import java.io.IOException;
+//import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +39,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.Filesystem;
+//import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -129,7 +129,7 @@ public class Vision
    
     private static AprilTagFieldLayout getFieldLayout(boolean useNormalLayout) 
   {
-    AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
     return layout;
   }
   /**
@@ -217,6 +217,7 @@ public class Vision
    * @return Could be empty if there isn't a good reading.
    */
   @Deprecated(since = "2024", forRemoval = true)
+  @SuppressWarnings("unused")
   private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
   {
     if (pose.isPresent())

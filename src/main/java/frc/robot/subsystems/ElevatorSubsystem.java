@@ -15,9 +15,9 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
+//import javax.swing.text.StyleContext.SmallAttributeSet;
 
-import com.ctre.phoenix6.controls.Follower;
+//import com.ctre.phoenix6.controls.Follower;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import com.revrobotics.sim.SparkMaxSim;
@@ -50,7 +50,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
+//import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import edu.wpi.first.wpilibj.Preferences;
 
@@ -109,6 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase
   private final MutVoltage        m_appliedVoltage = Volts.mutable(0);
   // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
   private final MutDistance       m_distance       = Meters.mutable(0);
+  @SuppressWarnings("unused")
   private final MutAngle          m_rotations      = Rotations.mutable(0);
   // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
   private final MutLinearVelocity m_velocity       = MetersPerSecond.mutable(0);

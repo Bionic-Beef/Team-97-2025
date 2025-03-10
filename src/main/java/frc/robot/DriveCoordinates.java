@@ -3,16 +3,17 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
+//import edu.wpi.first.math.geometry.Rotation3d;
 
 import static edu.wpi.first.units.Units.Inches;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 
 public class DriveCoordinates {
-    AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
     //robot width and length are NOT PRECISE. need to measure!
+    @SuppressWarnings("unused")
     private static final double robotWidth = 34.0; //the width of the robot with bumper in inches
     private static final double robotLength = 39.0; // width of robot with bumper in inches
 
@@ -24,10 +25,16 @@ public class DriveCoordinates {
     // with an offset to the left or right (for aligning to left or right branches),
     // and facing either away from or toward the tag (for aligning to the reef or coral station).
     public Pose2d getPose2d(int aprilTag, boolean faceToward){
+        @SuppressWarnings("unused")
         double tag6X = 530.49;
+        
+        @SuppressWarnings("unused")
         double tag6Y = 130.17;
+        
+        @SuppressWarnings("unused")
         double thetaDegrees6 = 300;
         // ^ these are for apriltag 6
+        
 
         Pose3d tagPose3D = layout.getTagPose(6).get();
         double tagX = tagPose3D.getX();

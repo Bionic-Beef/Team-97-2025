@@ -13,10 +13,12 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.util.sendable.SendableBuilder;
+//import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -26,12 +28,13 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
+import frc.robot.subsystems.TargetingSubsystem97;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.commands.SetElevatorPosition;
+//import frc.robot.commands.SetElevatorPosition;
 import swervelib.SwerveInputStream;
-import frc.robot.commands.SetElevatorPosition;
+import edu.wpi.first.util.sendable.Sendable;
 
 
 
@@ -40,7 +43,7 @@ import frc.robot.commands.SetElevatorPosition;
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
  * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer
+public class RobotContainer implements Sendable
 {
  
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -53,6 +56,8 @@ public class RobotContainer
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
   public final RGB m_RGB = new RGB(9);
+
+  public static TargetingSubsystem97 m_targetingSubsystem = new TargetingSubsystem97();
 
   public static final DigitalInput m_noCoralInIntakeSensor = new DigitalInput(2);
   public static boolean coralInIntake() { return !m_noCoralInIntakeSensor.get();}
@@ -147,6 +152,7 @@ public class RobotContainer
     m_RGB.LEDs.setRGB(7, 128, 128, 128);
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+    SmartDashboard.putData("Robot Configuration", this);
   }
 
   /**
@@ -225,7 +231,10 @@ public class RobotContainer
       //driverXbox.leftTrigger().onTrue(m_elevatorSubsystem.goToLowerLevel());
 
       // drives to a position by apriltag 6. untested.
-      driverXbox.start().whileTrue(drivebase.driveToPose(new Pose2d(Inches.of(530.49 + 11), Inches.of(130.17 - 19.05), new Rotation2d(2.094395102)))); //300-180 degrees
+//      driverXbox.start().whileTrue(drivebase.driveToPose(new Pose2d(Inches.of(530.49 + 11), Inches.of(130.17 - 19.05), new Rotation2d(2.094395102)))); //300-180 degrees
+      
+// Drive to target pose with the hamburger button
+      driverXbox.start().whileTrue(drivebase.pathfindToPose(() -> m_targetingSubsystem.getTargetPose()));
 
       //driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.stopC());
       //driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.setGoal(2));
@@ -308,4 +317,41 @@ public class RobotContainer
   {
     drivebase.setMotorBrake(brake);
   }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("Robot Configuration");
+    builder.addBooleanProperty("Reef Enable Camera Targeting", this::getReefCameraTargeting, this::setReefCameraTargeting);
+    builder.addBooleanProperty("Reef Enable LIDAR Targeting", this::getReefLIDARTargeting, this::setReefLIDARTargeting);
+    builder.addDoubleProperty("Limit Max Speed(%)", this::getMaxSpeedMultiplier, this::setMaxSpeedMultiplier);
+    builder.addDoubleProperty("Limit Max Rotation(%)", this::getMaxRotationMultiplier, this::setMaxRotationMultiplier);
+    builder.addDoubleArrayProperty("ZZZ Array of Doubles", this::getDoubleArray, this::setDoubleArray);
+    builder.addBooleanArrayProperty("ZZZ Array of Bools", this::getBooleanArray, this::setBooleanArray);
+  }
+
+  private boolean m_reefCameraTargetingEnabled = true;
+  private boolean getReefCameraTargeting() { return m_reefCameraTargetingEnabled; }
+  private void setReefCameraTargeting(boolean enable) { m_reefCameraTargetingEnabled = enable; }
+
+  private boolean m_reefLIDARTargetingEnabled = true;
+  private boolean getReefLIDARTargeting() { return m_reefLIDARTargetingEnabled; }
+  private void setReefLIDARTargeting(boolean enable) { m_reefLIDARTargetingEnabled = enable; }
+
+  private double m_maxSpeedMultiplier = 1.0;
+  private double getMaxSpeedMultiplier() { return m_maxSpeedMultiplier; }
+  private void setMaxSpeedMultiplier(double multiplier) { m_maxSpeedMultiplier = multiplier; }
+
+  private double m_maxRotationMultiplier = 1.0;
+  private double getMaxRotationMultiplier() { return m_maxRotationMultiplier; }
+  private void setMaxRotationMultiplier(double multiplier) { m_maxRotationMultiplier = multiplier; }
+
+  private boolean[] m_booleanArray = {true, false};
+  private boolean[] getBooleanArray() { return m_booleanArray; }
+  private void setBooleanArray(boolean[] array) { m_booleanArray = array; }
+
+  private double[] m_doubleArray = {3.14159, 42};
+  private double[] getDoubleArray() { return m_doubleArray; }
+  private void setDoubleArray(double[] array) { m_doubleArray = array; }
+
+
 }

@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.Random;
 
-import edu.wpi.first.cscore.CameraServerJNI.TelemetryKind;
+//import edu.wpi.first.cscore.CameraServerJNI.TelemetryKind;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
@@ -67,6 +67,7 @@ public class RGB extends SubsystemBase {
         double matchTime = Timer.getMatchTime();
 
         double loopTime = fpgaTime * kLoopSpeed;
+        @SuppressWarnings("unused")
         int loopTimeInt = (int) loopTime;
 
         final int NINE_CIRCLE_START = 4;
@@ -102,6 +103,7 @@ public class RGB extends SubsystemBase {
             LEDs.setHSV(j, (int) (j * 2.95), 255, 80);
         }
 
+        @SuppressWarnings("unused")
         int kNumLEDsInTotal = SEVEN_STROKE_END + 1;
 
 
@@ -119,6 +121,7 @@ public class RGB extends SubsystemBase {
         m_led.setData(LEDs);
     }
 
+    @SuppressWarnings("unused")
     private void DoIntroAnimation1(double fpgaTime) {
         int LED = 0;
         
