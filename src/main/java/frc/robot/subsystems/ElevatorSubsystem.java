@@ -40,6 +40,7 @@ import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -57,6 +58,8 @@ import edu.wpi.first.wpilibj.Preferences;
 public class ElevatorSubsystem extends SubsystemBase
 {
   public final double[] lHeights = {ElevatorConstants.L1Height, ElevatorConstants.L2Height, ElevatorConstants.L3Height, ElevatorConstants.L4Height};
+  public double m_testSetpoint = ElevatorConstants.defaultTestSetpoint;
+
   public int currentGoal = 0;
 
   public final Trigger atMin = new Trigger(() -> getLinearPosition().isNear(ElevatorConstants.kMinElevatorHeight,
@@ -136,15 +139,15 @@ public class ElevatorSubsystem extends SubsystemBase
                                                           MetersPerSecond)); // Records velocity in MetersPerSecond via SysIdRoutineLog.linearVelocity
               },
               this));
-
-  private double L1Setpoint = ElevatorConstants.defaultL1Setpoint;
   
   /**
    * Subsystem constructor.
    */
   public ElevatorSubsystem()
   {
-    Preferences.initDouble(ElevatorConstants.L1SetpointKey, L1Setpoint);
+    // System.out.println("filter before initDouble");
+    Preferences.initDouble(ElevatorConstants.testSetpointKey, ElevatorConstants.defaultTestSetpoint);
+    // System.out.println("filter after initDouble");
     SparkMaxConfig config = new SparkMaxConfig();
     config
         .smartCurrentLimit(ElevatorConstants.kElevatorCurrentLimit)
@@ -164,6 +167,23 @@ public class ElevatorSubsystem extends SubsystemBase
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
     
     seedElevatorMotorPosition();
+  }
+
+  public void loadPreferences(){
+    //if (m_testSetpoint != Preferences.getDouble(ElevatorConstants.testSetpointKey, m_testSetpoint)) {
+    System.out.println("filter before loadPreferences: " + m_testSetpoint);
+    this.m_testSetpoint = Preferences.getDouble(ElevatorConstants.testSetpointKey, ElevatorConstants.defaultTestSetpoint);
+    SmartDashboard.putNumber("latest_pref", this.m_testSetpoint);
+    System.out.println("filter after loadPreferences: " + m_testSetpoint);
+    //}
+  }
+
+  public Command goToTestSetpoint(){
+    //loadPreferences();
+   double goTo = Preferences.getDouble(ElevatorConstants.testSetpointKey, ElevatorConstants.defaultTestSetpoint);
+  System.out.println("filter goToTest: " + goTo);
+    SmartDashboard.putNumber("go_to", goTo);
+    return setGoal(goTo);
   }
 
   /**
@@ -259,6 +279,7 @@ public class ElevatorSubsystem extends SubsystemBase
    */
   public void reachGoal(double goal)
   {
+    SmartDashboard.putNumber("elevator_goal", goal);
     double voltsOut = MathUtil.clamp(
         m_controller.calculate(getHeightMeters(), goal) +
         m_feedforward.calculateWithVelocities(getVelocityMetersPerSecond(),

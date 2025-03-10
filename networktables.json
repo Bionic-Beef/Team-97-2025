@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "name": "/Preferences/testSetpoint",
+    "type": "double",
+    "value": 0.2,
+    "properties": {
+      "persistent": true
+    }
+  }
+]

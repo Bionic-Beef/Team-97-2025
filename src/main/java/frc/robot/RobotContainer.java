@@ -8,15 +8,19 @@ import static edu.wpi.first.units.Units.Inches;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,9 +28,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.commands.SetElevatorPosition;
@@ -49,7 +53,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/bionic-beef-WEEK-1"));
-  private final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
+  public final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
 
   public final RGB m_RGB = new RGB(9);
@@ -136,17 +140,33 @@ public class RobotContainer
   Command driveFieldOrientedAnglularVelocitySim = drivebase.driveFieldOriented(driveAngularVelocitySim);
 
   Command driveSetpointGenSim = drivebase.driveWithSetpointGeneratorFieldRelative(driveDirectAngleSim);
+  
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer()
   {
+    // drive to apriltag 6
+    NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
+    NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+    NamedCommands.registerCommand("runCoralPlacer", m_coralPlacerSubsystem.placerForward(0.85));
+    NamedCommands.registerCommand("stopCoralPlacer", m_coralPlacerSubsystem.stopCoralPlacer());
+
     // Configure the trigger bindings
     configureBindings();
     m_RGB.LEDs.setRGB(7, 128, 128, 128);
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -158,6 +178,7 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    //m_elevatorSubsystem.loadPreferences();
     // // (Condition) ? Return-On-True : Return-on-False
     // drivebase.setDefaultCommand(!RobotBase.isSimulation() ?
     //                             driveFieldOrientedAnglularVelocity :
@@ -193,14 +214,14 @@ public class RobotContainer
       driverXbox.povRight().whileTrue(drivebase.drivePOV(-1, 0, () -> ((driverXbox.button(5).getAsBoolean() ? 0.1 : 0) + (driverXbox.button(6).getAsBoolean() ? -0.1 : 0))));
 
       //driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
+      //driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
+      //driverXbox.x().onTrue(m_elevatorSubsystem.goToTestSetpoint());
+
       // THIS WORKS
       // use a, b, y to move the elevator to L1, L2, L3
       driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
       driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
       driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
-      // we can't mechanically reach L4 aparently?
-      //driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
 
       // manually raise and lower the ellvator
       driverXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
@@ -211,8 +232,6 @@ public class RobotContainer
       altXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
       altXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
       altXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
-      // we can't mechanically reach L4 aparently?
-      //altXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L4Height));
 
       // manually raise and lower the ellvator
       altXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));
@@ -225,7 +244,7 @@ public class RobotContainer
       //driverXbox.leftTrigger().onTrue(m_elevatorSubsystem.goToLowerLevel());
 
       // drives to a position by apriltag 6. untested.
-      driverXbox.start().whileTrue(drivebase.driveToPose(new Pose2d(Inches.of(530.49 + 11), Inches.of(130.17 - 19.05), new Rotation2d(2.094395102)))); //300-180 degrees
+      //driverXbox.start().whileTrue(drivebase.driveToPose(new Pose2d(Inches.of(530.49 + 11), Inches.of(130.17 - 19.05), new Rotation2d(2.094395102)))); //300-180 degrees
 
       //driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.stopC());
       //driverXbox.leftTrigger().whileTrue(m_elevatorSubsystem.setGoal(2));
@@ -237,11 +256,14 @@ public class RobotContainer
       //     drivebase.driveCommand(() -> 1.0, () -> 0.0,() -> 0.0)
       //                         );
 
-      //driverXbox.start().whileTrue(Commands.none());
+      // driverXbox.start().whileTrue(Commands.none());
       // driverXbox.back().whileTrue(Commands.none());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      // driverXbox.rightBumper().whileTrue(drivebase.AimAtBestTarget());
+      
+      driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
+      //drive to apriltag 6
+      driverXbox.back().whileTrue(drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
 
       // elevator driverXbox
       // driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
@@ -299,9 +321,8 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    // An example command will be run in autonomous
-    //return driveForward();
-    return drivebase.getAutonomousCommand("Leave Auto");
+    //return drivebase.getAutonomousCommand("Test DriveToBranch");
+    return autoChooser.getSelected();
   }
 
   public void setMotorBrake(boolean brake)

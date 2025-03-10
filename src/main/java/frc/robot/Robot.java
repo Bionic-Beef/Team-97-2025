@@ -7,11 +7,13 @@ package frc.robot;
 import java.sql.Driver;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.ElevatorConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to each mode, as
@@ -44,6 +46,9 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit()
   {
+    if (!Preferences.containsKey(ElevatorConstants.testSetpointKey)){
+      Preferences.setDouble(ElevatorConstants.testSetpointKey, ElevatorConstants.defaultTestSetpoint);
+    }
     Constants.IDS_TO_NAME.put(1,"Blue Alliance Left");
     Constants.IDS_TO_NAME.put(2,"Blue Alliance Center");
     Constants.IDS_TO_NAME.put(3,"Blue Alliance Right");
@@ -81,6 +86,8 @@ public class Robot extends TimedRobot
     // block in order for anything in the Command-based framework to work.
     // SmartDashboard.putString("Current Target", (String) Constants.IDS_TO_NAME.get(m_robotContainer.camera.getLatestResult().getBestTarget().getFiducialId()));
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("elevator_current", m_robotContainer.m_elevatorSubsystem.getHeightMeters());
+    ;
   }
 
   /**
@@ -131,6 +138,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
+    m_robotContainer.m_elevatorSubsystem.loadPreferences();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

@@ -22,8 +22,8 @@ public class DriveCoordinates {
 
     //work in progress. this will generate Pose2d coordinates relative to any apriltag,
     // with an offset to the left or right (for aligning to left or right branches),
-    // and facing either away from or toward the tag (for aligning to the reef or coral station).
-    public Pose2d getPose2d(int aprilTag, boolean faceToward){
+    // and a parameter for whether the robot should face toward or away from  (for facing toward the reef or away from the coral station).
+    public Pose2d getPose2d(int aprilTag, double parallelOffset, double normalOffset, boolean faceTowardTag){
         double tag6X = 530.49;
         double tag6Y = 130.17;
         double thetaDegrees6 = 300;
@@ -37,7 +37,10 @@ public class DriveCoordinates {
         double targetX = tagX + ((robotLength + offset) / 2) * Math.cos(thetaDegrees);
         double targetY = tagY + ((robotLength + offset) / 2) * Math.sin(thetaDegrees);
 
-        if (faceToward){
+        // double targetX = tagX + ((robotLength + normalOffset) / 2) * Math.cos(thetaDegrees);
+        // double targetY = tagY + ((robotLength + normalOffset) / 2) * Math.sin(thetaDegrees);
+
+        if (faceTowardTag){
             thetaDegrees -= 180;
         }
 

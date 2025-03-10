@@ -95,9 +95,9 @@ public class SwerveSubsystem extends SubsystemBase
       try
       {
         swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
-                                                                    new Pose2d(new Translation2d(Meter.of(2),
-                                                                                                 Meter.of(2)),
-                                                                               Rotation2d.fromDegrees(0)));        
+                                                                    new Pose2d(new Translation2d(Meter.of(10),
+                                                                                                 Meter.of(6)),
+                                                                               Rotation2d.fromDegrees(0.0)));        
         // Alternative method if you don't want to supply the conversion factor via JSON files.
         // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
       } catch (Exception e)
@@ -163,7 +163,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void periodic()
   {
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (SmartDashboard.getBoolean("Run vision odemetry updates?", true));
+    if (SmartDashboard.getBoolean("Run vision odemetry updates?", visionDriveTest));
     {
       vision.updatePoseEstimation(swerveDrive);
       swerveDrive.updateOdometry();
