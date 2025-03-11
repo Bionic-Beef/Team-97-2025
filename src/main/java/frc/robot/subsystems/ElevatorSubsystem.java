@@ -138,14 +138,14 @@ public class ElevatorSubsystem extends SubsystemBase
               },
               this));
 
-  private double L1Setpoint = ElevatorConstants.defaultL1Setpoint;
+  private double L1Setpoint = ElevatorConstants.defaultTestSetpoint;
   
   /**
    * Subsystem constructor.
    */
   public ElevatorSubsystem()
   {
-    Preferences.initDouble(ElevatorConstants.L1SetpointKey, L1Setpoint);
+    Preferences.initDouble(ElevatorConstants.testSetpointKey, L1Setpoint);
     SparkMaxConfig config = new SparkMaxConfig();
     config
         .smartCurrentLimit(ElevatorConstants.kElevatorCurrentLimit)
