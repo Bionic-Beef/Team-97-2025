@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
 
@@ -261,9 +262,12 @@ public class RobotContainer
       // driverXbox.leftBumper().whileTrue(drivebase.driveToTarget(1, new Transform2d()));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       // driverXbox.leftBumper().whileTrue(drivebase.driveToPose(new Pose2d(1.0, 1.0, new Rotation2d())));//Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       
-      driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
+      //driverXbox.x().whileTrue(drivebase.AimAtBestTarget());
       //drive to apriltag 6
-      driverXbox.back().whileTrue(drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
+      //driverXbox.back().whileTrue(drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
+      driverXbox.back().whileTrue(drivebase.driveToPose(new Pose2d(new Translation2d(Meter.of(2), Meter.of(4)), Rotation2d.fromDegrees(0.0))));
+      driverXbox.x().whileTrue(drivebase.driveToPose(new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.fromDegrees(0.0))));
+
 
       // elevator driverXbox
       // driverXbox.rightTrigger().whileTrue(m_elevatorSubsystem.raiseElevatorCommand());
