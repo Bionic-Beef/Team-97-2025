@@ -13,7 +13,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
@@ -25,7 +25,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
@@ -45,11 +45,17 @@
           "data": {
             "name": "stopCoralPlacer"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "goToL1"
+          }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

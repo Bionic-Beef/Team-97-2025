@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ResetMode;
+
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -44,5 +47,9 @@ public class CoralPlacerSubsystem extends SubsystemBase{
         return Commands.run(() -> {
             placerMotor.set(0);
         });
+    }
+    
+    public Command endWhenHasCoral(BooleanSupplier hasCoral){
+        return Commands.waitUntil(hasCoral);
     }
 }

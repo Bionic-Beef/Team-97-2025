@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
+import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.commands.SetElevatorPosition;
+import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
 import frc.robot.commands.SetElevatorPosition;
 
@@ -62,6 +64,7 @@ public class RobotContainer
   public static final DigitalInput m_noCoralInIntakeSensor = new DigitalInput(2);
   public static boolean coralInIntake() { return !m_noCoralInIntakeSensor.get();}
   public static Trigger noCoralIntakeTrigger = new Trigger(m_noCoralInIntakeSensor::get);
+  public BooleanSupplier coralBooleanSupplier = () -> !m_noCoralInIntakeSensor.get();
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -151,9 +154,12 @@ public class RobotContainer
   {
     // drive to apriltag 6
     NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
+    NamedCommands.registerCommand("driveToCoral", drivebase.driveToPose(new Pose2d(new Translation2d(16.164, 0.991),new Rotation2d(2.0944))));
+    NamedCommands.registerCommand("goToL1", m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
     NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
     NamedCommands.registerCommand("runCoralPlacer", m_coralPlacerSubsystem.placerForward(0.85));
     NamedCommands.registerCommand("stopCoralPlacer", m_coralPlacerSubsystem.stopCoralPlacer());
+    NamedCommands.registerCommand("waitForCoral", m_coralPlacerSubsystem.endWhenHasCoral(coralBooleanSupplier));
 
     // Configure the trigger bindings
     configureBindings();

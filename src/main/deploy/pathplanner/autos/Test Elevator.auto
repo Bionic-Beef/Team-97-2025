@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "goToL2"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 1.0
@@ -13,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "driveToBranch"
+            "name": "goToL1"
           }
         }
       ]
