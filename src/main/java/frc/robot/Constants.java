@@ -106,8 +106,8 @@ public final class Constants
     public static double kTolerance = 0.01; //0.1
 
     // dashboard preferences
-    public static final String L1SetpointKey = "L1Position";
-    public static final double defaultL1Setpoint = 0.3;
+    public static final String testSetpointKey = "L1Position";
+    public static final double defaultTestSetpoint = 0.3;
   }
 
   public static class CoralPlacerConstants{
