@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "name": "/Preferences/L1Position",
+    "type": "double",
+    "value": 0.3,
+    "properties": {
+      "persistent": true
+    }
+  }
+]

@@ -6,11 +6,11 @@
     "GLOBAL": {
       "font": "Proggy Dotted",
       "fps": "120",
-      "height": "1144",
+      "height": "1050",
       "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "2413",
+      "width": "1924",
       "xpos": "134",
       "ypos": "170"
     }
@@ -32,7 +32,7 @@
     "###/FMSInfo": {
       "Collapsed": "0",
       "Pos": "251,415",
-      "Size": "235,221"
+      "Size": "254,221"
     },
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
@@ -52,12 +52,12 @@
     "###FMS": {
       "Collapsed": "0",
       "Pos": "-2,454",
-      "Size": "244,244"
+      "Size": "235,244"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "52,739",
-      "Size": "1156,317"
+      "Size": "1156,310"
     },
     "###Keyboard 0 Settings": {
       "Collapsed": "0",
@@ -81,7 +81,7 @@
     },
     "###PWM Outputs": {
       "Collapsed": "0",
-      "Pos": "1927,287",
+      "Pos": "1905,287",
       "Size": "183,66"
     },
     "###Plot <0>": {
