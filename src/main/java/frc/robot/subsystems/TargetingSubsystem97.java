@@ -1,15 +1,20 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.util.sendable.SendableBuilder;
+
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class TargetingSubsystem97 extends SubsystemBase {
     private double m_ID = 42;
 
-    public Pose2d[] m_poses = {
+    public Pose2d[] m_bluePoses = {
       new Pose2d(1, 2,new Rotation2d(0)),
       new Pose2d(5.23, 3.04, Rotation2d.fromDegrees(120)),
       new Pose2d(4.92, 2.86, Rotation2d.fromDegrees(120)),
@@ -41,7 +46,7 @@ public class TargetingSubsystem97 extends SubsystemBase {
       new Pose2d(5.71, 3.84, Rotation2d.fromDegrees(180))
     };
 
-    //public Pose2d[] m_poses = {m_redPoses, m_bluePoses}[]
+    public Pose2d[] m_poses;
 
     public Pose2d targetPose = m_poses[12];
 
@@ -60,6 +65,18 @@ public class TargetingSubsystem97 extends SubsystemBase {
 
     public TargetingSubsystem97() {
         SmartDashboard.putData("Target", this);
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        if (ally.isPresent()) {
+            if (ally.get() == Alliance.Red) {
+                m_poses = m_redPoses;
+            }
+            if (ally.get() == Alliance.Blue) {
+              m_poses = m_bluePoses;
+            }
+        }
+        else {
+            System.out.println("No alliance color!");
+        }
     }
 
     @Override
