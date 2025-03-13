@@ -34,6 +34,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.RGB;
+import frc.robot.subsystems.TargetingSubsystem97;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.commands.SetElevatorPosition;
 import swervelib.SwerveDrive;
@@ -58,6 +59,7 @@ public class RobotContainer
                                                                                 "swerve/bionic-beef-WEEK-1"));
   public final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
+  private final TargetingSubsystem97 m_TargetingSubsystem97 = new TargetingSubsystem97();
 
   public final RGB m_RGB = new RGB(9);
 
@@ -153,13 +155,23 @@ public class RobotContainer
   public RobotContainer()
   {
     // drive to apriltag 6
-    NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
+    //NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
+    
+    //drive to the left(?) of tag 22
+    NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(m_TargetingSubsystem97.m_poses[2]));
     NamedCommands.registerCommand("driveToCoral", drivebase.driveToPose(new Pose2d(new Translation2d(16.164, 0.991),new Rotation2d(2.0944))));
-    NamedCommands.registerCommand("goToL1", m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
-    NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+    //NamedCommands.registerCommand("goToL1", m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
+    //NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+    
+    // Elevator seems to work. CHECK AGAIN once we have elevator sensor.
+    NamedCommands.registerCommand("goToL1", new SetElevatorPosition(m_elevatorSubsystem, ElevatorConstants.L1Height));
+    NamedCommands.registerCommand("goToL2", new SetElevatorPosition(m_elevatorSubsystem, ElevatorConstants.L2Height));
+    // coral placer and wait for coral work. time the placer runs is controlled through pathplanner with a deadline group
+    // but a command that finishes after a given time would be neater.
     NamedCommands.registerCommand("runCoralPlacer", m_coralPlacerSubsystem.placerForward(0.85));
     NamedCommands.registerCommand("stopCoralPlacer", m_coralPlacerSubsystem.stopCoralPlacer());
     NamedCommands.registerCommand("waitForCoral", m_coralPlacerSubsystem.endWhenHasCoral(coralBooleanSupplier));
+    //NamedCommands.registerCommand("autoShootCoral", m_coralPlacerSubsystem.autoShootCoral(1.0));
 
     // Configure the trigger bindings
     configureBindings();
@@ -226,9 +238,13 @@ public class RobotContainer
 
       // THIS WORKS
       // use a, b, y to move the elevator to L1, L2, L3
-      driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
-      driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
+      //driverXbox.a().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
+      //driverXbox.b().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
       driverXbox.y().onTrue(m_elevatorSubsystem.setGoal(ElevatorConstants.L3Height));
+
+      driverXbox.a().onTrue(new SetElevatorPosition(m_elevatorSubsystem, ElevatorConstants.L1Height));
+      driverXbox.b().onTrue(new SetElevatorPosition(m_elevatorSubsystem, ElevatorConstants.L2Height));
+
 
       // manually raise and lower the ellvator
       driverXbox.leftBumper().onTrue(m_elevatorSubsystem.raiseCommand(false));

@@ -52,4 +52,8 @@ public class CoralPlacerSubsystem extends SubsystemBase{
     public Command endWhenHasCoral(BooleanSupplier hasCoral){
         return Commands.waitUntil(hasCoral);
     }
+/* 
+    public Command autoShootCoral(double time){
+        return Commands.
+    }*/
 }
