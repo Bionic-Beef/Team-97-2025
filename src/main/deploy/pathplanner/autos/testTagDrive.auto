@@ -13,12 +13,6 @@
         {
           "type": "named",
           "data": {
-            "name": "driveToTargetAprilTag"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "driveToTargetAprilTagwOffset"
           }
         }
