@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
@@ -19,11 +18,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,11 +37,8 @@ import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.TargetingSubsystem97;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.Vision;
 import frc.robot.commands.SetElevatorPosition;
-import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
-import frc.robot.commands.SetElevatorPosition;
 
 
 
@@ -169,6 +163,7 @@ public class RobotContainer
     // NamedCommands.registerCommand("driveToTargetAprilTag", drivebase.driveToPose(Constants.get_scoring_point_offset(Vision.getAprilTagPose(m_TargetingSubsystem97.getTargetAprilTag(), new Transform2d())), 0.2));
     NamedCommands.registerCommand("driveToTarget", drivebase.driveToTargetPoseDeferred(0.4));
     NamedCommands.registerCommand("driveToCoral", drivebase.driveToPose(new Pose2d(new Translation2d(16.164, 0.991),new Rotation2d(2.0944))));
+    NamedCommands.registerCommand("drive forward", drivebase.drivePOV(0, -1));
     //NamedCommands.registerCommand("goToL1", m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
     //NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
     NamedCommands.registerCommand("2 foot drive", new DeferredCommand(() -> drivebase.driveToPose(drivebase.getPose().transformBy(new Transform2d(0.6, 0, new Rotation2d()))), Set.of(drivebase)));
