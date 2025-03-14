@@ -61,7 +61,7 @@ public class RobotContainer
                                                                                 "swerve/bionic-beef-WEEK-1"));
   public final ElevatorSubsystem m_elevatorSubsystem = new ElevatorSubsystem();
   private final CoralPlacerSubsystem m_coralPlacerSubsystem = new CoralPlacerSubsystem();
-  private final TargetingSubsystem97 m_TargetingSubsystem97 = new TargetingSubsystem97();
+  public static TargetingSubsystem97 m_TargetingSubsystem97 = new TargetingSubsystem97();
 
   public final RGB m_RGB = new RGB(9);
 
@@ -326,7 +326,7 @@ public class RobotContainer
 
       // place coral
       driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
-      driverXbox.leftTrigger().whileTrue(drivebase.driveToPose(m_TargetingSubsystem97.getTargetPose(), 0.2));
+      driverXbox.leftTrigger().whileTrue(drivebase.driveToTargetPoseDeferred());
       driverXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       // driverXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
