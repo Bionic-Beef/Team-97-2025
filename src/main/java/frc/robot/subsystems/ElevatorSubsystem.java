@@ -15,9 +15,6 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
-import com.ctre.phoenix6.controls.Follower;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import com.revrobotics.sim.SparkMaxSim;
@@ -40,7 +37,6 @@ import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -404,7 +400,7 @@ public class ElevatorSubsystem extends SubsystemBase
 
   public Command raiseCommand(Boolean raise) {
     return run(() -> {
-        m_motor.set((raise) ? 0.1 : -0.1);
+        m_motor.set((raise) ? Constants.ElevatorConstants.raiseSpeed : -Constants.ElevatorConstants.lowerSpeed);
     });
   }
 

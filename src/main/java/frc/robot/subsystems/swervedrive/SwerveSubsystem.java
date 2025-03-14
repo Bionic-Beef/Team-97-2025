@@ -408,6 +408,11 @@ public class SwerveSubsystem extends SubsystemBase
     return new DeferredCommand(() -> driveToPose(RobotContainer.m_TargetingSubsystem97.getTargetPose(), 0.75), 
                               Set.of(this));
   }
+
+  public Command driveToTargetPoseDeferred(double speedScaler) {
+    return new DeferredCommand(() -> driveToPose(RobotContainer.m_TargetingSubsystem97.getTargetPose(), speedScaler), 
+                              Set.of(this));
+  }
   /**
    * Drive with {@link SwerveSetpointGenerator} from 254, implemented by PathPlanner.
    *

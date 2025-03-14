@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meter;
 
 import java.io.File;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -22,10 +23,12 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -128,7 +131,7 @@ public class RobotContainer
   SwerveInputStream driveAngularVelocitySim = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                    () -> -driverXbox.getLeftY(),
                                                                    () -> -driverXbox.getLeftX())
-                                                               .withControllerRotationAxis(() -> driverXbox.getRawAxis(2))
+                                                               .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
                                                                .deadband(OperatorConstants.DEADBAND)
                                                                .scaleTranslation(0.8)
                                                                .allianceRelativeControl(true);
@@ -160,15 +163,15 @@ public class RobotContainer
     //NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
     
     //tag 22: 2
-    NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(m_TargetingSubsystem97.m_poses[9], 0.4));
-    NamedCommands.registerCommand("driveToBranchwOffset", drivebase.driveToPose(Constants.get_scoring_tag_offset(m_TargetingSubsystem97.m_poses[9]), 0.4));
-    NamedCommands.registerCommand("driveToScoringPos", drivebase.driveToPose(Constants.get_scoring_tag_offset(m_TargetingSubsystem97.getTargetPose()), 0.2));
-    NamedCommands.registerCommand("driveToTargetAprilTag", drivebase.driveToPose(Constants.get_scoring_tag_offset(Vision.getAprilTagPose(m_TargetingSubsystem97.getTargetAprilTag(), new Transform2d())), 0.2));
-    NamedCommands.registerCommand("driveToTargetAprilTagwOffset", drivebase.driveToPose(Constants.get_scoring_tag_offset(Vision.getAprilTagPose(m_TargetingSubsystem97.getTargetAprilTag(), new Transform2d())), 0.2));
+    // NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(m_TargetingSubsystem97.m_poses[9], 0.4));
+    // NamedCommands.registerCommand("driveToBranchwOffset", drivebase.driveToPose(Constants.get_scoring_point_offset(m_TargetingSubsystem97.m_poses[9]), 0.4));
+    // NamedCommands.registerCommand("driveToScoringPos", drivebase.driveToPose(Constants.get_scoring_point_offset(m_TargetingSubsystem97.getTargetPose()), 0.2));
+    // NamedCommands.registerCommand("driveToTargetAprilTag", drivebase.driveToPose(Constants.get_scoring_point_offset(Vision.getAprilTagPose(m_TargetingSubsystem97.getTargetAprilTag(), new Transform2d())), 0.2));
+    NamedCommands.registerCommand("driveToTarget", drivebase.driveToTargetPoseDeferred(0.4));
     NamedCommands.registerCommand("driveToCoral", drivebase.driveToPose(new Pose2d(new Translation2d(16.164, 0.991),new Rotation2d(2.0944))));
     //NamedCommands.registerCommand("goToL1", m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
     //NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
-    
+    NamedCommands.registerCommand("2 foot drive", new DeferredCommand(() -> drivebase.driveToPose(drivebase.getPose().transformBy(new Transform2d(0.6, 0, new Rotation2d()))), Set.of(drivebase)));
     // Elevator seems to work. CHECK AGAIN once we have elevator sensor.
     NamedCommands.registerCommand("goToL1", new SetElevatorPosition(m_elevatorSubsystem, ElevatorConstants.L1Height));
     NamedCommands.registerCommand("goToL2", new SetElevatorPosition(m_elevatorSubsystem, ElevatorConstants.L2Height));
@@ -184,9 +187,9 @@ public class RobotContainer
     m_RGB.LEDs.setRGB(7, 128, 128, 128);
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-
+    
     // Build an auto chooser. This will use Commands.none() as the default option.
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooser("Leave Auto");
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
@@ -202,8 +205,8 @@ public class RobotContainer
    */
   private void configureBindings()
   {
-    //m_elevatorSubsystem.loadPreferences();
-    // // (Condition) ? Return-On-True : Return-on-False
+    // m_elevatorSubsystem.loadPreferences();
+    // (Condition) ? Return-On-True : Return-on-False
     // drivebase.setDefaultCommand(!RobotBase.isSimulation() ?
     //                             driveFieldOrientedAnglularVelocity :
     //                             driveFieldOrientedAnglularVelocitySim);
@@ -325,12 +328,12 @@ public class RobotContainer
       noCoralIntakeTrigger.onTrue(m_coralPlacerSubsystem.stopCoralPlacer());
 
       // place coral
-      driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
+      driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(1));
       driverXbox.leftTrigger().whileTrue(drivebase.driveToTargetPoseDeferred());
       driverXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       // driverXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
-      altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
+      altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(1));
       altXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());
       altXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
       altXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());

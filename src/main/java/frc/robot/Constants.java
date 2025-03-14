@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.DistanceUnit;
@@ -91,15 +92,17 @@ public final class Constants
     public static final double L3Height = 0.752475;//0.695 from week 1; // L3 is 3ft, 11 and 5/8in off the ground
     public static final double L4Height = 1.3716; // L4 is 6ft, 0in off the ground
 
-    public static double kElevatorRampRate = 1.5;
+    public static double kElevatorRampRate = 1.5 + 2.5;
     public static int    kElevatorCurrentLimit = 30;
-    public static double kMaxVelocity = Meters.of(0.3).per(Second).in(MetersPerSecond); //2
+    public static double kMaxVelocity = Meters.of(2).per(Second).in(MetersPerSecond); //2
     public static double kMaxAcceleration = Meters.of(0.3).per(Second).per(Second).in(MetersPerSecondPerSecond);
     public static double kTolerance = 0.1;
 
     // dashboard preferences
     public static final String testSetpointKey = "testSetpoint";
     public static final double defaultTestSetpoint = 0.2;
+    public static final double raiseSpeed = 0.1;
+    public static final double lowerSpeed = 0.1;
   }
 
   public static class CoralPlacerConstants{
@@ -107,10 +110,29 @@ public final class Constants
     public static final int sensorDIO = 3;
   }
 
-  public static Pose2d get_scoring_tag_offset(Pose2d tag){
-    Pose2d pose = new Pose2d(tag.getX() + Units.inchesToMeters((19.5*Math.cos(tag.getRotation().getRadians() + Math.PI) - 6.5 *Math.cos(tag.getRotation().getRadians() + Math.PI*1.5))), tag.getY() + Units.inchesToMeters(19.5*Math.sin(tag.getRotation().getRadians() + Math.PI) + 6.5 * Math.sin(tag.getRotation().getRadians() + Math.PI*1.5)), Rotation2d.fromDegrees(tag.getRotation().getDegrees() + 180));
+  public static Pose2d get_scoring_point_offset(Pose2d tag){
+    Pose2d pose = new Pose2d(tag.getX() + Units.inchesToMeters((19.5*Math.cos(tag.getRotation().getRadians()) + 6.5 *Math.cos(tag.getRotation().getRadians() + Math.PI*0.5))), tag.getY() + Units.inchesToMeters(19.5*Math.sin(tag.getRotation().getRadians()) + 6.5 * Math.sin(tag.getRotation().getRadians() + Math.PI*0.5)), Rotation2d.fromDegrees(tag.getRotation().getDegrees()));
     double[] a =  {pose.getX(), pose.getY(), pose.getRotation().getDegrees()};
     SmartDashboard.putNumberArray("april drive offset pose", a);
     return pose;
   }
+
+  public static double[] getPoseAsDoubles(Pose2d pose){
+    double[] a = {pose.getX(), pose.getY(), pose.getRotation().getDegrees()};
+    return a;
+  }
+
+  public static Pose2d get_scoring_tag_offset(Pose2d tag){
+    Pose2d pose = new Pose2d(tag.getX() + Units.inchesToMeters((19.5*Math.cos(tag.getRotation().getRadians()) + 6.5 *Math.cos(tag.getRotation().getRadians() + Math.PI*0.5))), tag.getY() + Units.inchesToMeters(19.5*Math.sin(tag.getRotation().getRadians()) + 6.5 * Math.sin(tag.getRotation().getRadians() + Math.PI*0.5)), Rotation2d.fromDegrees(tag.getRotation().getDegrees() + 180));
+    double[] a =  {pose.getX(), pose.getY(), pose.getRotation().getDegrees()};
+    SmartDashboard.putNumberArray("april drive offset pose", a);
+    return pose;
+  }
+
+  public static double robotOffsetCenterToTagCenter = Units.inchesToMeters(19.5);
+  public static double robotOffsetRightToTagCenter = Units.inchesToMeters(6.5);
+  
+  public static double robotFeederOffset = Units.inchesToMeters(18);
+  // public static Transform2d coralBranchAprilTagOffset = new Transform2d(Units.inchesToMeters(robotOffsetCenterToTagCenter), Units.inchesToMeters(6.5), Rotation2d.fromDegrees(180));
+  // public static Transform2d coralFeederAprilTagOffset = new Transform2d(Units.inchesToMeters(robotOffsetCenterToTagCenter), 0, Rotation2d.fromDegrees(180));
 }

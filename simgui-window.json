@@ -66,7 +66,7 @@
     "###System Joysticks": {
       "Collapsed": "0",
       "Pos": "205,308",
-      "Size": "206,41"
+      "Size": "273,290"
     },
     "###Timing": {
       "Collapsed": "0",
@@ -81,7 +81,7 @@
     "Robot State": {
       "Collapsed": "0",
       "Pos": "7,20",
-      "Size": "137,41"
+      "Size": "137,152"
     }
   }
 }
