@@ -19,6 +19,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.math.Matter;
 
 /**
@@ -107,6 +108,9 @@ public final class Constants
   }
 
   public static Pose2d get_scoring_tag_offset(Pose2d tag){
-    return new Pose2d(tag.getX() + Units.inchesToMeters((19.5*Math.cos(tag.getRotation().getRadians() + Math.PI) - 6.5 *Math.cos(tag.getRotation().getRadians() + Math.PI*1.5))), tag.getY() + Units.inchesToMeters(19.5*Math.sin(tag.getRotation().getRadians() + Math.PI) + 6.5 * Math.sin(tag.getRotation().getRadians() + Math.PI*1.5)), tag.getRotation());
+    Pose2d pose = new Pose2d(tag.getX() + Units.inchesToMeters((19.5*Math.cos(tag.getRotation().getRadians() + Math.PI) - 6.5 *Math.cos(tag.getRotation().getRadians() + Math.PI*1.5))), tag.getY() + Units.inchesToMeters(19.5*Math.sin(tag.getRotation().getRadians() + Math.PI) + 6.5 * Math.sin(tag.getRotation().getRadians() + Math.PI*1.5)), Rotation2d.fromDegrees(tag.getRotation().getDegrees() + 180));
+    double[] a =  {pose.getX(), pose.getY(), pose.getRotation().getDegrees()};
+    SmartDashboard.putNumberArray("april drive offset pose", a);
+    return pose;
   }
 }
