@@ -12,7 +12,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class TargetingSubsystem97 extends SubsystemBase {
-    private double m_ID = 42;
+    private double m_ID = 1;
+    private Integer m_aprilTarget = 20;
 
     public Pose2d[] m_bluePoses = {
       new Pose2d(1, 2,new Rotation2d(0)),
@@ -48,9 +49,11 @@ public class TargetingSubsystem97 extends SubsystemBase {
 
     public Pose2d[] m_poses;
 
-    public Pose2d targetPose = m_poses[12];
+    public Pose2d targetPose = m_bluePoses[12];
 
     public double getTargetID() { return m_ID; }
+
+    public Integer getTargetAprilTag() { return m_aprilTarget; }
 
     public void setTargetID(double ID) { 
       m_ID = ID % 12;
@@ -59,6 +62,14 @@ public class TargetingSubsystem97 extends SubsystemBase {
       SmartDashboard.putNumber("liveTarget2", m_ID);
       targetPose = m_poses[(int)m_ID];
     }
+
+    public void setAprilTargetId(double ID) { 
+      m_aprilTarget = (int) (ID % 23);
+      while(m_aprilTarget <= 0)
+        m_aprilTarget += 22;
+      SmartDashboard.putNumber("liveAprilTarget2", m_ID);
+    }
+
     public Pose2d getTargetPose() { return targetPose; }
 
     public double[] getTargetPoseAsDoubles() { double[] a = {targetPose.getX(), targetPose.getY(), targetPose.getRotation().getDegrees()}; return a;};
@@ -67,21 +78,29 @@ public class TargetingSubsystem97 extends SubsystemBase {
         SmartDashboard.putData("Target", this);
         Optional<Alliance> ally = DriverStation.getAlliance();
         if (ally.isPresent()) {
-            if (ally.get() == Alliance.Red) {
-                m_poses = m_redPoses;
-            }
-            if (ally.get() == Alliance.Blue) {
-              m_poses = m_bluePoses;
-            }
+            m_poses = ally.get() == Alliance.Red ? m_redPoses : m_bluePoses;
+            // if (ally.get() == Alliance.Red) {
+            //   m_poses = m_redPoses;
+            // }
+            // if (ally.get() == Alliance.Blue) {
+            //   m_poses = m_bluePoses;
+            // }
+            // else {
+            //   m_poses = m_bluePoses;
+            //   System.out.println("No alliance color!");
+            // }
         }
         else {
-            System.out.println("No alliance color!");
+          m_poses = m_bluePoses;
+          System.out.println("No ally present!");
         }
+        targetPose = m_poses[12];
     }
 
     @Override
     public void periodic() {
       SmartDashboard.putNumber("liveTarget", m_ID);
+      SmartDashboard.putNumber("aprilTarget", m_aprilTarget);
       SmartDashboard.putNumberArray("Field/ReefTarget", getTargetPoseAsDoubles());
     }
 
@@ -95,6 +114,7 @@ public class TargetingSubsystem97 extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
       builder.setSmartDashboardType("Target");
       builder.addDoubleProperty("TargetID", this::getTargetID, this::setTargetID);
+      builder.addDoubleProperty("targetAprilTag", this::getTargetAprilTag, this::setAprilTargetId);
       builder.addDoubleProperty("distance", () -> { return 3.14; }, null);
       builder.addDoubleArrayProperty("Location", this::getTargetPoseAsDoubles, null);
     }

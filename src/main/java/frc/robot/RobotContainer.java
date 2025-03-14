@@ -16,6 +16,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -36,6 +37,7 @@ import frc.robot.subsystems.CoralPlacerSubsystem;
 import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.TargetingSubsystem97;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision;
 import frc.robot.commands.SetElevatorPosition;
 import swervelib.SwerveDrive;
 import swervelib.SwerveInputStream;
@@ -157,8 +159,12 @@ public class RobotContainer
     // drive to apriltag 6
     //NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(new Pose2d(new Translation2d(14.140, 2.425),new Rotation2d(2.0944))));
     
-    //drive to the left(?) of tag 22
-    NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(m_TargetingSubsystem97.m_poses[2]));
+    //tag 22: 2
+    NamedCommands.registerCommand("driveToBranch", drivebase.driveToPose(m_TargetingSubsystem97.m_poses[9], 0.4));
+    NamedCommands.registerCommand("driveToBranchwOffset", drivebase.driveToPose(Constants.get_scoring_tag_offset(m_TargetingSubsystem97.m_poses[9]), 0.4));
+    NamedCommands.registerCommand("driveToScoringPos", drivebase.driveToPose(Constants.get_scoring_tag_offset(m_TargetingSubsystem97.getTargetPose()), 0.2));
+    NamedCommands.registerCommand("driveToTargetAprilTag", drivebase.driveToPose(Constants.get_scoring_tag_offset(Vision.getAprilTagPose(m_TargetingSubsystem97.getTargetAprilTag(), new Transform2d())), 0.2));
+    NamedCommands.registerCommand("driveToTargetAprilTagwOffset", drivebase.driveToPose(Constants.get_scoring_tag_offset(Vision.getAprilTagPose(m_TargetingSubsystem97.getTargetAprilTag(), new Transform2d())), 0.2));
     NamedCommands.registerCommand("driveToCoral", drivebase.driveToPose(new Pose2d(new Translation2d(16.164, 0.991),new Rotation2d(2.0944))));
     //NamedCommands.registerCommand("goToL1", m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
     //NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
@@ -181,7 +187,6 @@ public class RobotContainer
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
-
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
@@ -321,9 +326,9 @@ public class RobotContainer
 
       // place coral
       driverXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
-      driverXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());
+      driverXbox.leftTrigger().whileTrue(drivebase.driveToPose(m_TargetingSubsystem97.getTargetPose(), 0.2));
       driverXbox.rightTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
-      driverXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
+      // driverXbox.leftTrigger().onFalse(m_coralPlacerSubsystem.stopCoralPlacer());
 
       altXbox.rightTrigger().whileTrue(m_coralPlacerSubsystem.placerForward(0.85));
       altXbox.leftTrigger().whileTrue(m_coralPlacerSubsystem.placerReverse());

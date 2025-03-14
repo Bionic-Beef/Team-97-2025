@@ -117,7 +117,7 @@ public class Vision
        */
       public static Pose2d getAprilTagPose(int aprilTag, Transform2d robotOffset)
       {
-        Optional<Pose3d> aprilTagPose3d = fieldLayout.getTagPose(aprilTag);
+      Optional<Pose3d> aprilTagPose3d = fieldLayout.getTagPose(aprilTag);
       if (aprilTagPose3d.isPresent())
       {
         return aprilTagPose3d.get().toPose2d().transformBy(robotOffset);
@@ -160,10 +160,6 @@ public class Vision
         swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
                                          pose.timestampSeconds,
                                          camera.curStdDevs);
-      }
-      else if(poseEst == null){
-        System.out.println("Pose est is no good");
-
       }
     }
 
@@ -357,6 +353,10 @@ public class Vision
         poses.add(targetPose);
       }
     }
+
+    // if (poses.size() == 0){
+    //   System.out.println("no targets");
+    // }
 
     field2d.getObject("tracked targets").setPoses(poses);
   }
@@ -587,6 +587,9 @@ public class Vision
         else{
           SmartDashboard.putBoolean("Has Results", false);
         }
+      }
+      else{
+        resultsList = new ArrayList<>();
       }
     }
 

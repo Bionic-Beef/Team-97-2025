@@ -12,6 +12,8 @@ import static edu.wpi.first.units.Units.Second;
 import java.security.DigestInputStream;
 import java.util.HashMap;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.DistanceUnit;
@@ -102,5 +104,9 @@ public final class Constants
   public static class CoralPlacerConstants{
     public static final int placerMotorID = (Integer) 15;
     public static final int sensorDIO = 3;
+  }
+
+  public static Pose2d get_scoring_tag_offset(Pose2d tag){
+    return new Pose2d(tag.getX() + Units.inchesToMeters((19.5*Math.cos(tag.getRotation().getRadians() + Math.PI) - 6.5 *Math.cos(tag.getRotation().getRadians() + Math.PI*1.5))), tag.getY() + Units.inchesToMeters(19.5*Math.sin(tag.getRotation().getRadians() + Math.PI) + 6.5 * Math.sin(tag.getRotation().getRadians() + Math.PI*1.5)), tag.getRotation());
   }
 }

@@ -32,7 +32,7 @@ public class DriveCoordinates {
         Pose3d tagPose3D = layout.getTagPose(6).get();
         double tagX = tagPose3D.getX();
         double tagY = tagPose3D.getY();
-        double thetaDegrees = tagPose3D.getRotation().getAngle();
+        double thetaDegrees = tagPose3D.getRotation().getAngle()*(180/Math.PI);
 
         double targetX = tagX + ((robotLength + offset) / 2) * Math.cos(thetaDegrees);
         double targetY = tagY + ((robotLength + offset) / 2) * Math.sin(thetaDegrees);
