@@ -164,6 +164,8 @@ public class RobotContainer
     NamedCommands.registerCommand("driveToTarget", drivebase.driveToTargetPoseDeferred(0.4));
     NamedCommands.registerCommand("driveToCoral", drivebase.driveToPose(new Pose2d(new Translation2d(16.164, 0.991),new Rotation2d(2.0944))));
     NamedCommands.registerCommand("drive forward", drivebase.drivePOV(0, -1));
+    NamedCommands.registerCommand("drive backward", drivebase.drivePOV(0, 1));
+
     //NamedCommands.registerCommand("goToL1", m_elevatorSubsystem.setGoal(ElevatorConstants.L1Height));
     //NamedCommands.registerCommand("goToL2", m_elevatorSubsystem.setGoal(ElevatorConstants.L2Height));
     NamedCommands.registerCommand("2 foot drive", new DeferredCommand(() -> drivebase.driveToPose(drivebase.getPose().transformBy(new Transform2d(0.6, 0, new Rotation2d()))), Set.of(drivebase)));
