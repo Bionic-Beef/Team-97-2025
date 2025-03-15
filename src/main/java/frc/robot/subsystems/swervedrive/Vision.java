@@ -5,6 +5,9 @@ import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -312,15 +315,15 @@ public class Vision
   {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
     {
-//      try
-//      {
-//        Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
-//        Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
-//        Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
-//      } catch (IOException | URISyntaxException e)
-//      {
-//        e.printStackTrace();
-//      }debounceTime
+     try
+     {
+       Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
+       Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
+       Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
+     } catch (IOException | URISyntaxException e)
+     {
+       e.printStackTrace();
+     }
     }
   }
 

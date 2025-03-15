@@ -172,7 +172,7 @@ public class RobotContainer
     NamedCommands.registerCommand("goToL2", new SetElevatorPosition(m_elevatorSubsystem, ElevatorConstants.L2Height));
     // coral placer and wait for coral work. time the placer runs is controlled through pathplanner with a deadline group
     // but a command that finishes after a given time would be neater.
-    NamedCommands.registerCommand("runCoralPlacer", m_coralPlacerSubsystem.placerForward(0.85));
+    NamedCommands.registerCommand("runCoralPlacer", m_coralPlacerSubsystem.placerForward(1));
     NamedCommands.registerCommand("stopCoralPlacer", m_coralPlacerSubsystem.stopCoralPlacer());
     NamedCommands.registerCommand("waitForCoral", m_coralPlacerSubsystem.endWhenHasCoral(coralBooleanSupplier));
     //NamedCommands.registerCommand("autoShootCoral", m_coralPlacerSubsystem.autoShootCoral(1.0));
