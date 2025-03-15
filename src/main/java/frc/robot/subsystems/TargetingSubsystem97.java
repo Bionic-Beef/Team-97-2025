@@ -48,9 +48,9 @@ public class TargetingSubsystem97 extends SubsystemBase {
     };
 
     public Pose2d[] m_blueParkPoses = {
-      Vision.getAprilTagPose(14, new Transform2d(Units.inchesToMeters(39.52 / 2), -1.16, new Rotation2d())),
-      Vision.getAprilTagPose(14, new Transform2d(Units.inchesToMeters(39.52 / 2), 0, new Rotation2d())),
-      Vision.getAprilTagPose(14, new Transform2d(Units.inchesToMeters(39.52 / 2), 1.16, new Rotation2d())),
+      Vision.getAprilTagPose(14, new Transform2d(Units.inchesToMeters(-39.52 / 2), -1.16, new Rotation2d())),
+      Vision.getAprilTagPose(14, new Transform2d(Units.inchesToMeters(-39.52 / 2), 0, new Rotation2d())),
+      Vision.getAprilTagPose(14, new Transform2d(Units.inchesToMeters(-39.52 / 2), 1.16, new Rotation2d())),
     };
 
     public Pose2d[] m_bluePoses = constructArray(m_blueBranchPoses, m_blueFeederPoses, m_blueParkPoses);
@@ -81,10 +81,11 @@ public class TargetingSubsystem97 extends SubsystemBase {
     };
 
     public Pose2d[] m_redParkPoses = {
-      Vision.getAprilTagPose(5, new Transform2d(Units.inchesToMeters(-39.52 / 2), 1.16, new Rotation2d())),
-      Vision.getAprilTagPose(5, new Transform2d(Units.inchesToMeters(-39.52 / 2), 0, new Rotation2d())), 
       Vision.getAprilTagPose(5, new Transform2d(Units.inchesToMeters(-39.52 / 2), -1.16, new Rotation2d())),
+      Vision.getAprilTagPose(5, new Transform2d(Units.inchesToMeters(-39.52 / 2), 0, new Rotation2d())), 
+      Vision.getAprilTagPose(5, new Transform2d(Units.inchesToMeters(-39.52 / 2), 1.16, new Rotation2d())),
     };
+
     public Pose2d[] m_redPoses = constructArray(m_redBranchPoses, m_redFeederPoses, m_redParkPoses);
 
     public Pose2d[] m_poses;
