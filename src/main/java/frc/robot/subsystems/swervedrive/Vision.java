@@ -384,7 +384,7 @@ public class Vision
              new Translation3d(Units.inchesToMeters(16), //including wood
                                Units.inchesToMeters(0),
                                Units.inchesToMeters(10.75)),
-             VecBuilder.fill(0.25, 0.25, 0.55), VecBuilder.fill(0.125,0.125,0.3125)),
+             VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.2,0.2,0.5)),
     /**
      * Back Camera
      */
@@ -393,7 +393,7 @@ public class Vision
             new Translation3d(Units.inchesToMeters(-14.5),//including wood
                               Units.inchesToMeters(0),
                               Units.inchesToMeters(24.5)),
-            VecBuilder.fill(0.25, 0.25, 0.55), VecBuilder.fill(0.125,0.125,0.3125));
+            VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.2,0.2,0.5));
     /**
      * Center Camera
      */
