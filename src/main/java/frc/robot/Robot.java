@@ -27,9 +27,11 @@ public class Robot extends TimedRobot
   private RobotContainer m_robotContainer;
 
   private Timer disabledTimer;
+  private Timer m_gcTimer = new Timer(); //https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-gc.html#system-memory-tuning
 
   public Robot()
   {
+    m_gcTimer.start();
     instance = this;
   }
 
@@ -78,6 +80,10 @@ public class Robot extends TimedRobot
   @Override
   public void robotPeriodic()
   {
+      // run the garbage collector every 5 seconds https://docs.wpilib.org/en/stable/docs/software/basic-programming/java-gc.html#system-memory-tuning
+    if (m_gcTimer.advanceIfElapsed(5)) {
+      System.gc();
+    }
     // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
