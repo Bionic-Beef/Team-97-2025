@@ -485,7 +485,7 @@ public class Vision
         // A 640 x 480 camera with a 100 degree diagonal FOV.
         cameraProp.setCalibration(1200, 900 , Rotation2d.fromDegrees(72.22));
         // Approximate detection noise with average and standard deviation error in pixels.
-        cameraProp.setCalibError(0.3, 0.05);
+        cameraProp.setCalibError(0.3, 0.5);
         // Set the camera image capture framerate (Note: this is limited by robot loop rate).
         cameraProp.setFPS(30);
         // The average and standard deviation in milliseconds of image data latency.
