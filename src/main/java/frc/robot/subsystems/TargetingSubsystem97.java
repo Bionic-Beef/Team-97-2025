@@ -10,7 +10,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,16 +99,6 @@ public class TargetingSubsystem97 extends SubsystemBase {
       Optional<Alliance> ally = DriverStation.getAlliance();
         if (ally.isPresent()) {
             m_poses = ally.get() == Alliance.Red ? m_redPoses : m_bluePoses;
-            // if (ally.get() == Alliance.Red) {
-            //   m_poses = m_redPoses;
-            // }
-            // if (ally.get() == Alliance.Blue) {
-            //   m_poses = m_bluePoses;
-            // }
-            // else {
-            //   m_poses = m_bluePoses;
-            //   System.out.println("No alliance color!");
-            // }
         }
         else {
           m_poses = m_bluePoses;
@@ -138,16 +127,6 @@ public class TargetingSubsystem97 extends SubsystemBase {
         Optional<Alliance> ally = DriverStation.getAlliance();
         if (ally.isPresent()) {
             m_poses = ally.get() == Alliance.Red ? m_redPoses : m_bluePoses;
-            // if (ally.get() == Alliance.Red) {
-            //   m_poses = m_redPoses;
-            // }
-            // if (ally.get() == Alliance.Blue) {
-            //   m_poses = m_bluePoses;
-            // }
-            // else {
-            //   m_poses = m_bluePoses;
-            //   System.out.println("No alliance color!");
-            // }
         }
         else {
           m_poses = m_bluePoses;
@@ -160,9 +139,6 @@ public class TargetingSubsystem97 extends SubsystemBase {
     public void periodic() {
       SmartDashboard.putNumber("liveTarget", m_ID);
       SmartDashboard.putNumber("aprilTarget", m_aprilTarget);
-      // SmartDashboard.putNumberArray("Field/TargetedAprilTag", Constants.getPoseAsDoubles(Vision.getAprilTagPose(m_aprilTarget)));
-      // SmartDashboard.putNumberArray("Field/AprilOffsetTarget1", Constants.getPoseAsDoubles(Vision.getAprilTagPose(m_aprilTarget, new Transform2d(Units.inchesToMeters(19.5), Units.inchesToMeters(6.5), Rotation2d.fromDegrees(180)))));
-      // SmartDashboard.putNumberArray("Field/AprilOffsetTarget2", Constants.getPoseAsDoubles(Constants.get_scoring_tag_offset(Vision.getAprilTagPose(m_aprilTarget, new Transform2d()))));
       SmartDashboard.putNumberArray("Field/ReefTarget", getTargetPoseAsDoubles());
     }
 
@@ -177,7 +153,7 @@ public class TargetingSubsystem97 extends SubsystemBase {
       builder.setSmartDashboardType("Target");
       builder.addDoubleProperty("TargetID", this::getTargetID, this::setTargetID);
       builder.addDoubleProperty("targetAprilTag", this::getTargetAprilTag, this::setAprilTargetId);
-      builder.addDoubleProperty("distance", () -> { return 3.14; }, null);
+      builder.addDoubleProperty("distance", () -> { return 3.1415926535897; }, null);
       builder.addDoubleArrayProperty("Location", this::getTargetPoseAsDoubles, null);
     }
     

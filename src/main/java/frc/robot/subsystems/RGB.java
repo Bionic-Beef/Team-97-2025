@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.Random;
 
-import edu.wpi.first.cscore.CameraServerJNI.TelemetryKind;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;

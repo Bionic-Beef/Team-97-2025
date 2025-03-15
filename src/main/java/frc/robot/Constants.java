@@ -9,16 +9,12 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Second;
 
-import java.security.DigestInputStream;
 import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.math.Matter;
@@ -33,14 +29,15 @@ import swervelib.math.Matter;
  */
 public final class Constants
 {
-
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
-  public static final HashMap IDS_TO_NAME = new HashMap<Integer, String>();
+  public static final HashMap<Integer, String> IDS_TO_NAME = new HashMap<Integer, String>();
   // Maximum speed of the robot in meters per second, used to limit acceleration.
-
+  public Constants(){
+    
+  }
 //  public static final class AutonConstants
 //  {
 //
@@ -102,7 +99,6 @@ public final class Constants
     public static final String testSetpointKey = "testSetpoint";
     public static final double defaultTestSetpoint = 0.2;
     public static final double raiseSpeed = 0.1;
-    public static final double lowerSpeed = 0.1;
   }
 
   public static class CoralPlacerConstants{

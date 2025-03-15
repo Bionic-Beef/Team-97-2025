@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.sql.Driver;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.TimedRobot;

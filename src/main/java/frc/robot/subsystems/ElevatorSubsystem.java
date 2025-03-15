@@ -36,6 +36,7 @@ import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -78,7 +79,7 @@ public class ElevatorSubsystem extends SubsystemBase
   private final SparkMax followerSparkMax = new SparkMax(ElevatorConstants.elevatorFollowerID, MotorType.kBrushless);
   private final RelativeEncoder m_encoder  = m_motor.getEncoder();
   private final SparkMaxSim     m_motorSim = new SparkMaxSim(m_motor, m_elevatorGearbox);
-
+  private double speed = Constants.ElevatorConstants.raiseSpeed;
 
   // private final DigitalInput m_limitSwitchLow    = new DigitalInput(1);
 
@@ -108,6 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase
   private final MutVoltage        m_appliedVoltage = Volts.mutable(0);
   // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
   private final MutDistance       m_distance       = Meters.mutable(0);
+  @SuppressWarnings("unused")
   private final MutAngle          m_rotations      = Rotations.mutable(0);
   // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
   private final MutLinearVelocity m_velocity       = MetersPerSecond.mutable(0);
@@ -400,7 +402,7 @@ public class ElevatorSubsystem extends SubsystemBase
 
   public Command raiseCommand(Boolean raise) {
     return run(() -> {
-        m_motor.set((raise) ? Constants.ElevatorConstants.raiseSpeed : -Constants.ElevatorConstants.lowerSpeed);
+        m_motor.set((raise) ? getSpeed() : - getSpeed());
     });
   }
 
@@ -415,10 +417,24 @@ public class ElevatorSubsystem extends SubsystemBase
   {
   }
 
+  public double getSpeed(){
+    return speed;
+  }
+
+  public void setSpeed(double newSpeed){
+    speed = newSpeed;
+  }
+
   @Override
   public void periodic()
   {
     SmartDashboard.putNumber("Height", getHeightMeters());
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder){
+    builder.setSmartDashboardType("Elevator");
+    builder.addDoubleProperty("raise spped", this::getSpeed, this::setSpeed);
   }
 
     public class Elevator{
