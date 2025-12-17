@@ -23,7 +23,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -32,25 +31,22 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-import frc.robot.subsystems.swervedrive.Vision.Cameras;
+import frc.robot.RobotContainer;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
-import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import swervelib.SwerveController;
@@ -73,6 +69,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * AprilTag field layout.
    */
+  @SuppressWarnings("unused")
   private final AprilTagFieldLayout aprilTagFieldLayout = getFieldLayout(true);
     /**
      * Enable vision odometry updates while driving.
@@ -95,9 +92,9 @@ public class SwerveSubsystem extends SubsystemBase
       try
       {
         swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,
-                                                                    new Pose2d(new Translation2d(Meter.of(2),
-                                                                                                 Meter.of(2)),
-                                                                               Rotation2d.fromDegrees(0)));        
+                                                                    new Pose2d(new Translation2d(Meter.of(1),
+                                                                                                 Meter.of(4)),
+                                                                               Rotation2d.fromDegrees(0.0)));        
         // Alternative method if you don't want to supply the conversion factor via JSON files.
         // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
       } catch (Exception e)
@@ -163,7 +160,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void periodic()
   {
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (SmartDashboard.getBoolean("Run vision odemetry updates?", true));
+    if (SmartDashboard.getBoolean("Run vision odemetry updates?", visionDriveTest));
     {
       vision.updatePoseEstimation(swerveDrive);
       swerveDrive.updateOdometry();
@@ -386,6 +383,30 @@ public class SwerveSubsystem extends SubsystemBase
                                      );
   }
 
+  public Command driveToPose(Pose2d pose, double speedScalar)
+  {
+// Create the constraints to use while pathfinding
+    PathConstraints constraints = new PathConstraints(
+        swerveDrive.getMaximumChassisVelocity()*speedScalar, 4.0,
+        swerveDrive.getMaximumChassisAngularVelocity()*speedScalar, Units.degreesToRadians(720));
+
+// Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindToPose(
+        pose,
+        constraints,
+        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+                                     );
+  }
+
+  public Command driveToTargetPoseDeferred() {
+    return new DeferredCommand(() -> driveToPose(RobotContainer.m_TargetingSubsystem97.getTargetPose(), 0.75), 
+                              Set.of(this));
+  }
+
+  public Command driveToTargetPoseDeferred(double speedScaler) {
+    return new DeferredCommand(() -> driveToPose(RobotContainer.m_TargetingSubsystem97.getTargetPose(), speedScaler), 
+                              Set.of(this));
+  }
   /**
    * Drive with {@link SwerveSetpointGenerator} from 254, implemented by PathPlanner.
    *
@@ -555,6 +576,26 @@ public class SwerveSubsystem extends SubsystemBase
                                                                       swerveDrive.getMaximumChassisVelocity()));
     });
   }
+
+  
+  public Command drivePOV(double robotForward, double robotLeft)
+  {
+    return drivePOV(robotForward, robotLeft, () -> 0);
+  }
+
+  public Command drivePOV(double robotForward, double robotLeft, DoubleSupplier rotationSupplier)
+  {
+    return run(() -> {
+      // Make the robot move
+      swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
+                            -robotLeft * swerveDrive.getMaximumChassisVelocity(),
+                            robotForward * swerveDrive.getMaximumChassisVelocity()), 0.8 * 0.15 * 1.5),
+                        rotationSupplier.getAsDouble() * swerveDrive.getMaximumChassisAngularVelocity(),
+                        false,
+                        false);
+    });
+  }
+
 
   /**
    * The primary method for controlling the drivebase.  Takes a {@link Translation2d} and a rotation rate, and

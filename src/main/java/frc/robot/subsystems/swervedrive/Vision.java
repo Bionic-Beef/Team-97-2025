@@ -6,6 +6,8 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +41,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -91,6 +92,7 @@ public class Vision
       {
         this.currentPose = currentPose;
         this.field2d = field;
+        
     
         if (Robot.isSimulation())
         {
@@ -116,7 +118,7 @@ public class Vision
        */
       public static Pose2d getAprilTagPose(int aprilTag, Transform2d robotOffset)
       {
-        Optional<Pose3d> aprilTagPose3d = fieldLayout.getTagPose(aprilTag);
+      Optional<Pose3d> aprilTagPose3d = fieldLayout.getTagPose(aprilTag);
       if (aprilTagPose3d.isPresent())
       {
         return aprilTagPose3d.get().toPose2d().transformBy(robotOffset);
@@ -216,6 +218,7 @@ public class Vision
    * @param pose Estimated robot pose.
    * @return Could be empty if there isn't a good reading.
    */
+  @SuppressWarnings("unused")
   @Deprecated(since = "2024", forRemoval = true)
   private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
   {
@@ -312,15 +315,15 @@ public class Vision
   {
     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
     {
-//      try
-//      {
-//        Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
-//        Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
-//        Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
-//      } catch (IOException | URISyntaxException e)
-//      {
-//        e.printStackTrace();
-//      }debounceTime
+     try
+     {
+       Desktop.getDesktop().browse(new URI("http://localhost:1182/"));
+       Desktop.getDesktop().browse(new URI("http://localhost:1184/"));
+       Desktop.getDesktop().browse(new URI("http://localhost:1186/"));
+     } catch (IOException | URISyntaxException e)
+     {
+       e.printStackTrace();
+     }
     }
   }
 
@@ -353,6 +356,10 @@ public class Vision
       }
     }
 
+    // if (poses.size() == 0){
+    //   System.out.println("no targets");
+    // }
+
     field2d.getObject("tracked targets").setPoses(poses);
   }
 
@@ -372,23 +379,23 @@ public class Vision
   enum Cameras
   {
     /**
-     * Left Camera
+     * Front Camera
      */
     FRONT_CAMERA("front_camera",
-             new Rotation3d(0, Math.toRadians(30), Math.toRadians(0)),
-             new Translation3d(Units.inchesToMeters(11),
+             new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)),
+             new Translation3d(Units.inchesToMeters(16), //including wood
                                Units.inchesToMeters(0),
-                               Units.inchesToMeters(1)),
-             VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1)),
+                               Units.inchesToMeters(10.75)),
+             VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.2,0.2,0.5)),
     /**
-     * Right Camera
+     * Back Camera
      */
     BACK_CAMERA("back_camera",
             new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)),
-            new Translation3d(Units.inchesToMeters(-11),
+            new Translation3d(Units.inchesToMeters(-14.5),//including wood
                               Units.inchesToMeters(0),
-                              Units.inchesToMeters(1)),
-            VecBuilder.fill(4,4,8), VecBuilder.fill(0.5,0.5,1));
+                              Units.inchesToMeters(24.5)),
+            VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.2,0.2,0.5));
     /**
      * Center Camera
      */
@@ -478,7 +485,7 @@ public class Vision
         // A 640 x 480 camera with a 100 degree diagonal FOV.
         cameraProp.setCalibration(1200, 900 , Rotation2d.fromDegrees(72.22));
         // Approximate detection noise with average and standard deviation error in pixels.
-        cameraProp.setCalibError(0.3, 0.05);
+        cameraProp.setCalibError(0.3, 0.5);
         // Set the camera image capture framerate (Note: this is limited by robot loop rate).
         cameraProp.setFPS(30);
         // The average and standard deviation in milliseconds of image data latency.
@@ -582,6 +589,9 @@ public class Vision
         else{
           SmartDashboard.putBoolean("Has Results", false);
         }
+      }
+      else{
+        resultsList = new ArrayList<>();
       }
     }
 
